@@ -1,6 +1,6 @@
-import type { Page } from "puppeteer-core";
+import { Step } from "../StepIterator";
 
-export enum DocumentosInserviveis {
+export enum ActionsInserviveis {
   INFORMACAO_EAMEX = "Informacao EAMEX",
   DESPACHO_DIRIGENTE_VERIFIQUE = "Despacho Dirigente - Verifique material arrolado",
   INFORMACAO_CAF_SEM_IMPEDIMENTO_LEGAL = "Informação CAF - Sem impedimento legal",
@@ -10,22 +10,11 @@ export enum DocumentosInserviveis {
   INFORMACAO_CAF_AUTORIZANDO_BAIXA = "Informacao CAF - Autorizando baixa contabil",
 }
 
-export enum DocumentosGerais {
+export enum ActionsGerais {
   PEGAR_DADOS = "Pegar dados",
+  ENTRAR = "Entrar",
 }
 
-export interface DadosDocumentosInserviveis {
-  processo?: string;
-  unidade?: string;
-  doc?: DocumentosInserviveis;
-}
-
-export type Document = {
-  [key in DocumentosInserviveis | DocumentosGerais]: {
-    title: string;
-    do: (
-      page: Page,
-      { processo, unidade, doc }: DadosDocumentosInserviveis
-    ) => void | Promise<unknown>;
-  }[];
+export type Action = {
+  [key in ActionsInserviveis | ActionsGerais]: Array<Step>;
 };

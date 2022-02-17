@@ -1,10 +1,9 @@
-import type { Page } from "puppeteer-core";
-import type { Document, DocumentosInserviveis } from "../Document";
+import type { Action, ActionsInserviveis } from "../../Actions";
 
 export default [
   {
     title: "Indo para inclusão de documento...",
-    do: async (page: Page, { processo }: { processo: string }) =>
+    do: async (page, { processo }: { processo: string }) =>
       page.goto(
         `https://www.documentos.spsempapel.sp.gov.br/sigaex/app/expediente/doc/editar?modelo=25310&mobilPaiSel.sigla=${processo.replace(
           /-|\//g,
@@ -15,15 +14,15 @@ export default [
   },
   {
     title: "Selecionando modelo...",
-    do: (page: Page) => page.select("#preenchimento", "469422"),
+    do: (page) => page.select("#preenchimento", "469422"),
   },
   {
     title: "Aguardando...",
-    do: (page: Page) => page.waitForSelector("#Assunto"),
+    do: (page) => page.waitForSelector("#Assunto"),
   },
   {
     title: "Preenchendo assunto...",
-    do: (page: Page) =>
+    do: (page) =>
       page.type(
         "#Assunto",
         "Arrolamento de Material Inservível e/ou Excedente com base na Resolução SE 41/00"
@@ -31,16 +30,16 @@ export default [
   },
   {
     title: "Preenchendo interessado...",
-    do: (page: Page, { unidade }: { unidade: string }) =>
+    do: (page, { unidade }: { unidade: string }) =>
       page.type("#Interessado", unidade),
   },
   {
     title: "Mudando preenchimento para HTML...",
-    do: (page: Page) => page.click("#cke_50_label"),
+    do: (page) => page.click("#cke_50_label"),
   },
   {
     title: "Preenchendo conteúdo...",
-    do: (page: Page) =>
+    do: (page) =>
       page.type(
         "#cke_1_contents > textarea",
         `
@@ -54,7 +53,7 @@ export default [
   },
   {
     title: "Confirmando despacho...",
-    do: (page: Page) =>
+    do: (page) =>
       Promise.all([
         page.waitForNavigation({ waitUntil: "networkidle0" }),
         page.click("#btnGravar"),
@@ -62,10 +61,10 @@ export default [
   },
   {
     title: "Finalizando...",
-    do: (page: Page) =>
+    do: (page) =>
       Promise.all([
         page.click("#finalizar"),
         page.waitForNavigation({ waitUntil: "networkidle0" }),
       ]),
   },
-] as Document[DocumentosInserviveis.DESPACHO_DIRIGENTE_CONFIRMACAO];
+] as Action[ActionsInserviveis.DESPACHO_DIRIGENTE_CONFIRMACAO];

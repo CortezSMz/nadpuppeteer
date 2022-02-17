@@ -1,5 +1,5 @@
 import type { Page } from "puppeteer-core";
-import { Document, DocumentosGerais } from "../Document";
+import { Action, ActionsGerais } from "../../Actions";
 
 export default [
   {
@@ -70,4 +70,4 @@ export default [
       return { pendencias };
     },
   },
-] as Document[DocumentosGerais.PEGAR_DADOS];
+] as Action[ActionsGerais.PEGAR_DADOS];

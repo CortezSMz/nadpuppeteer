@@ -1,5 +1,5 @@
-import { BrowserWindow } from "electron";
 import { Page } from "puppeteer-core";
+import { BrowserWindow } from "electron";
 
 export interface Puppet {
   window: BrowserWindow;

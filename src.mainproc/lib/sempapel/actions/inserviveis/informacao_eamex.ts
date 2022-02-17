@@ -1,10 +1,10 @@
 import type { Page } from "puppeteer-core";
-import type { Document, DocumentosInserviveis } from "../Document";
+import type { Action, ActionsInserviveis } from "../../Actions";
 
 export default [
   {
     title: "Indo para Folha Líder...",
-    do: (page: Page, { processo }: { processo: string }) =>
+    do: (page, { processo }: { processo: string }) =>
       page.goto(
         `https://www.documentos.spsempapel.sp.gov.br/sigaex/app/expediente/doc/exibir?sigla=${processo.replace(
           /-|\//g,
@@ -17,7 +17,7 @@ export default [
   },
   {
     title: "Indo para inclusão de documento...",
-    do: (page: Page, { processo }: { processo: string }) =>
+    do: (page, { processo }: { processo: string }) =>
       page.goto(
         `https://www.documentos.spsempapel.sp.gov.br/sigaex/app/expediente/doc/editar?modelo=5515&mobilPaiSel.sigla=${processo.replace(
           /-|\//g,
@@ -28,14 +28,14 @@ export default [
   },
   {
     title: "Personalizando assinatura...",
-    do: (page: Page) =>
+    do: (page) =>
       page.click(
         "#frm > div.row.js-siga-sp-documento-analisa-alteracao > div.col-sm-2 > div > div > input.form-check-input.ml-3"
       ),
   },
   {
     title: "Preenchendo função...",
-    do: (page: Page) =>
+    do: (page) =>
       Promise.all([
         page.waitForSelector("#personalizarFuncao"),
         page.type("#personalizarFuncao", "Membro EAMEX"),
@@ -43,12 +43,11 @@ export default [
   },
   {
     title: "Preenchendo unidade...",
-    do: (page: Page) =>
-      page.type("#personalizarUnidade", "Núcleo de Administração"),
+    do: (page) => page.type("#personalizarUnidade", "Núcleo de Administração"),
   },
   {
     title: "Preenchendo assunto...",
-    do: (page: Page) =>
+    do: (page) =>
       page.type(
         "#Assunto",
         "Arrolamento de Material Inservível e/ou Excedente com base na Resolução SE 41/00"
@@ -56,16 +55,16 @@ export default [
   },
   {
     title: "Preenchendo interessado...",
-    do: (page: Page, { unidade }: { unidade: string }) =>
+    do: (page, { unidade }: { unidade: string }) =>
       page.type("#Interessado", unidade),
   },
   {
     title: "Mudando preenchimento para HTML...",
-    do: (page: Page) => page.click("#cke_50_label"),
+    do: (page) => page.click("#cke_50_label"),
   },
   {
     title: "Preenchendo conteúdo...",
-    do: (page: Page, { unidade }: { unidade: string }) =>
+    do: (page, { unidade }: { unidade: string }) =>
       page.type(
         "#cke_1_contents > textarea",
         `
@@ -85,7 +84,7 @@ export default [
   },
   {
     title: "Confirmando informação...",
-    do: (page: Page) =>
+    do: (page) =>
       Promise.all([
         page.click("#btnGravar"),
         page.waitForNavigation({ waitUntil: "networkidle0" }),
@@ -93,23 +92,22 @@ export default [
   },
   {
     title: "Incluindo cossignatário...",
-    do: (page: Page) => page.click("#incluir-cossignatario"),
+    do: (page) => page.click("#incluir-cossignatario"),
   },
   {
     title: "Selecionando cossignatário...",
-    do: (page: Page) =>
-      page.type("#formulario_cosignatarioSel_sigla", "SEDUC17757"),
+    do: (page) => page.type("#formulario_cosignatarioSel_sigla", "SEDUC17757"),
   },
   {
     title: "Personalizando cossignatário...",
-    do: (page: Page) =>
+    do: (page) =>
       page.click(
         "body > div:nth-child(6) > div > div.card-body > form > div:nth-child(3) > div.col-sm-2 > div > div"
       ),
   },
   {
     title: "Preenchendo função...",
-    do: (page: Page) =>
+    do: (page) =>
       Promise.all([
         page.waitForSelector("#funcaoCosignatario", { visible: true }),
         page.type("#funcaoCosignatario", "Membro EAMEX"),
@@ -117,7 +115,7 @@ export default [
   },
   {
     title: "Preenchendo unidade...",
-    do: (page: Page) =>
+    do: (page) =>
       page.type(
         "#unidadeCosignatario",
         "Núcleo de Informações Educacionais e Tecnologia"
@@ -125,7 +123,7 @@ export default [
   },
   {
     title: "Confirmando cossignatário...",
-    do: (page: Page) =>
+    do: (page) =>
       Promise.all([
         page.click(
           "body > div:nth-child(6) > div > div.card-body > form > div:nth-child(5) > div > input.btn.btn-primary"
@@ -135,23 +133,22 @@ export default [
   },
   {
     title: "Incluindo cossignatário...",
-    do: (page: Page) => page.click("#incluir-cossignatario"),
+    do: (page) => page.click("#incluir-cossignatario"),
   },
   {
     title: "Selecionando cossignatário...",
-    do: (page: Page) =>
-      page.type("#formulario_cosignatarioSel_sigla", "SEDUC56333"),
+    do: (page) => page.type("#formulario_cosignatarioSel_sigla", "SEDUC56333"),
   },
   {
     title: "Personalizando cossignatário...",
-    do: (page: Page) =>
+    do: (page) =>
       page.click(
         "body > div:nth-child(6) > div > div.card-body > form > div:nth-child(3) > div.col-sm-2 > div > div"
       ),
   },
   {
     title: "Preenchendo função...",
-    do: (page: Page) =>
+    do: (page) =>
       Promise.all([
         page.waitForSelector("#funcaoCosignatario", { visible: true }),
         page.type("#funcaoCosignatario", "Membro EAMEX"),
@@ -159,12 +156,12 @@ export default [
   },
   {
     title: "Preenchendo unidade...",
-    do: (page: Page) =>
+    do: (page) =>
       page.type("#unidadeCosignatario", "Núcleo de Apoio Administrativo"),
   },
   {
     title: "Confirmando cossignatário...",
-    do: (page: Page) =>
+    do: (page) =>
       Promise.all([
         page.click(
           "body > div:nth-child(6) > div > div.card-body > form > div:nth-child(5) > div > input.btn.btn-primary"
@@ -174,7 +171,7 @@ export default [
   },
   {
     title: "Indo para assinatura...",
-    do: (page: Page) =>
+    do: (page) =>
       Promise.all([
         page.click("#assinar"),
         page.waitForNavigation({ waitUntil: "networkidle0" }),
@@ -182,7 +179,7 @@ export default [
   },
   {
     title: "Assinando...",
-    do: (page: Page) =>
+    do: (page) =>
       Promise.all([
         page.click("#bot-assinar"),
         page.waitForSelector("#senhaOk", {
@@ -194,20 +191,20 @@ export default [
   },
   {
     title: "Preenchendo senha...",
-    do: (page: Page, { password }: { password: string }) =>
+    do: (page, { password }: { password: string }) =>
       page.type("#senhaUsuarioSubscritor", password, { delay: 100 }),
   },
   {
     title: "Confirmando...",
-    do: (page: Page) =>
+    do: (page) =>
       page.waitForSelector("#senhaOk", { hidden: false, visible: true }),
   },
   {
     title: "Confirmando...",
-    do: (page: Page) =>
+    do: (page) =>
       Promise.all([
         page.click("#senhaOk"),
         page.waitForNavigation({ waitUntil: "networkidle0" }),
       ]),
   },
-] as Document[DocumentosInserviveis.INFORMACAO_EAMEX];
+] as Action[ActionsInserviveis.INFORMACAO_EAMEX];

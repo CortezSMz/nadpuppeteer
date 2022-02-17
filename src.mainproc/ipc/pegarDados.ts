@@ -1,107 +1,31 @@
 import { ipcMain } from "electron";
-import { getWindow } from "../lib/WindowManager";
-import { popAlert, setProgress, sleep, stepIterator } from "../util/Util";
-import { default as pegarDados } from "../lib/sempapel/documentos/geral/pegar_dados";
-import { getEscola, getEscolas, setEscola } from "../lib/StorageManager";
+import StepIterator from "../lib/StepIterator";
+import { getEscola, setEscola } from "../lib/StorageManager";
+import { PEGAR_DADOS } from "../lib/sempapel/actions/index";
 
 ipcMain.on("pegarDados", async (_, unidade: string, processo: string) => {
-  const subWindow = getWindow("SubWindow");
+  const iterator = new StepIterator(PEGAR_DADOS, {
+    expect: ["documentos", "situacao", "pendencias"],
+    data: { unidade, processo },
+  });
 
-  subWindow.window.show();
+  const response = await iterator.iterate();
 
-  const un = getEscola(unidade);
+  const dados = getEscola(unidade);
 
-  const ite = stepIterator(pegarDados);
+  if (!response) return;
 
-  while (ite.hasNext()) {
-    const step = ite.next();
+  if (response.documentos)
+    dados.processos[processo].documentos =
+      response.documentos as unknown as Array<string>;
 
-    setProgress({
-      value: Math.floor((step.index / (pegarDados.length - 1)) * 100),
-    });
+  if (response.situacao)
+    dados.processos[processo].situacao =
+      response.situacao as unknown as Array<string>;
 
-    popAlert({
-      text: step.value.title,
-      title: `Pegando dados ${processo}`,
-      color: "blue",
-      icon: "fa-pencil",
-      position: "center",
-    });
+  if (response.pendencias)
+    dados.processos[processo].pendencias =
+      response.pendencias as unknown as Array<string>;
 
-    try {
-      const res = await step.value.do(subWindow.page, {
-        processo,
-      });
-
-      if (res && res.pendencias)
-        un.processos[processo].pendencias = res.pendencias;
-      if (res && res.documentos)
-        un.processos[processo].documentos = res.documentos;
-      if (res && res.situacao) un.processos[processo].situacao = res.situacao;
-
-      setEscola(unidade, un);
-    } catch (error) {
-      console.log(error);
-
-      popAlert({ text: error, color: "error" });
-    }
-
-    await sleep(200);
-  }
-
-  subWindow.window.hide();
+  setEscola(unidade, dados);
 });
-
-export async function pegarAllDados(): Promise<void> {
-  const subWindow = getWindow("SubWindow");
-  subWindow.window.show();
-
-  const todasUnidades = getEscolas();
-
-  for (const [unidade, dadosEscola] of Object.entries(todasUnidades)) {
-    for (const [processo, _] of Object.entries(dadosEscola.processos)) {
-      const un = getEscola(unidade);
-
-      const ite = stepIterator(pegarDados);
-
-      while (ite.hasNext()) {
-        const step = ite.next();
-
-        setProgress({
-          value: Math.floor((step.index / (pegarDados.length - 1)) * 100),
-        });
-
-        popAlert({
-          text: step.value.title,
-          title: `Pegando dados ${processo}`,
-          color: "blue",
-          icon: "fa-pencil",
-          position: "center",
-        });
-
-        try {
-          const res = await step.value.do(subWindow.page, {
-            processo,
-          });
-
-          if (res && res.pendencias)
-            un.processos[processo].pendencias = res.pendencias;
-          if (res && res.documentos)
-            un.processos[processo].documentos = res.documentos;
-          if (res && res.situacao)
-            un.processos[processo].situacao = res.situacao;
-
-          setEscola(unidade, un);
-        } catch (error) {
-          console.log(error);
-
-          popAlert({ text: error, color: "error" });
-        }
-
-        await sleep(200);
-      }
-    }
-  }
-
-  subWindow.window.hide();
-}

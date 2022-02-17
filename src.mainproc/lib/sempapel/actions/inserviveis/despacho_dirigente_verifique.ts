@@ -1,4 +1,4 @@
-import type { Document, DocumentosInserviveis } from "../Document";
+import type { Action, ActionsInserviveis } from "../../Actions";
 
 export default [
   {
@@ -36,4 +36,4 @@ export default [
         page.waitForNavigation({ waitUntil: "networkidle0" }),
       ]),
   },
-] as Document[DocumentosInserviveis.DESPACHO_DIRIGENTE_VERIFIQUE];
+] as Action[ActionsInserviveis.DESPACHO_DIRIGENTE_VERIFIQUE];

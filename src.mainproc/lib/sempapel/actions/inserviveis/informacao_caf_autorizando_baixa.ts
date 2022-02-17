@@ -1,5 +1,4 @@
-import type { Page } from "puppeteer-core";
-import type { Document, DocumentosInserviveis } from "../Document";
+import type { Action, ActionsInserviveis } from "../../Actions";
 
 export default [
   {
@@ -48,4 +47,4 @@ export default [
         page.waitForNavigation({ waitUntil: "networkidle0" }),
       ]),
   },
-] as Document[DocumentosInserviveis.INFORMACAO_CAF_AUTORIZANDO_BAIXA];
+] as Action[ActionsInserviveis.INFORMACAO_CAF_AUTORIZANDO_BAIXA];
