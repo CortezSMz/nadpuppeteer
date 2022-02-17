@@ -1,6 +1,6 @@
 import { ipcMain } from "electron";
 import StepIterator from "../lib/StepIterator";
-import * as documentos from "../lib/sempapel/actions";
+import * as documentos from "../lib/sempapel/actions/index";
 import { ActionsInserviveis } from "../lib/sempapel/Actions";
 
 ipcMain.on(
