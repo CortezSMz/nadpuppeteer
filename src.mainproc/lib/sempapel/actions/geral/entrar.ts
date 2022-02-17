@@ -29,7 +29,7 @@ export default [
       ]),
   },
   {
-    title: "Verificando...",
+    title: "Entrando...",
     do: async (page: Page) => {
       let error;
 

@@ -70,4 +70,8 @@ export default [
       return { pendencias };
     },
   },
+  {
+    title: "Tudo copiado!",
+    do: () => null,
+  },
 ] as Action[ActionsGerais.PEGAR_DADOS];

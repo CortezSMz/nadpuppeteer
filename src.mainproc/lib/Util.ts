@@ -1,7 +1,7 @@
 import { getWindow } from "./WindowManager";
 
 export interface AlertOptions {
-  text: string;
+  text?: string;
   title?: string;
   color?: string;
   icon?: string;

@@ -35,7 +35,7 @@ export interface Credentials {
 }
 
 export interface AlertOptions {
-  text: string;
+  text?: string;
   title?: string;
   color?: string;
   icon?: string;

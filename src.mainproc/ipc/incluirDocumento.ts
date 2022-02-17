@@ -16,6 +16,12 @@ ipcMain.on(
 
     const iterator = new StepIterator(steps, {
       data: { password, unidade, processo },
+      alert: {
+        color: "blue",
+        icon: "fa-pencil",
+        position: "center",
+        timeout: 1000,
+      },
     });
 
     await iterator.iterate();

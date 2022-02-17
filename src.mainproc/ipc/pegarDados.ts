@@ -7,6 +7,12 @@ ipcMain.on("pegarDados", async (_, unidade: string, processo: string) => {
   const iterator = new StepIterator(PEGAR_DADOS, {
     expect: ["documentos", "situacao", "pendencias"],
     data: { unidade, processo },
+    alert: {
+      color: "blue",
+      icon: "fa-pencil",
+      position: "center",
+      timeout: 1000,
+    },
   });
 
   const response = await iterator.iterate();

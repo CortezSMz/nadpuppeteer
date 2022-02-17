@@ -54,9 +54,6 @@ export default class StepIterator {
 
       popAlert({
         text: step.title,
-        color: "blue",
-        icon: "fa-pencil",
-        position: "center",
         ...this.options.alert,
       });
 
