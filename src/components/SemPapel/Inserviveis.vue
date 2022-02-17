@@ -163,8 +163,10 @@ export default Vue.extend({
   data() {
     return {
       escolas: this.$root.$data.escolas,
-      filtrando: true,
-      chipsEscolas: [16, 30, 22],
+      filtrando: false,
+      chipsEscolas: [
+        ...Array(Object.keys(this.$root.$data.escolas).length).keys(),
+      ],
       items: [
         { nome: "Informacao EAMEX", value: "INFORMACAO_EAMEX" },
         {
@@ -198,7 +200,9 @@ export default Vue.extend({
 
   computed: {
     filtro(): Array<unknown> {
-      return this.chipsEscolas.map((i) => Object.entries(this.escolas)[i]);
+      return this.chipsEscolas.map(
+        (i: number) => Object.entries(this.escolas)[i]
+      );
     },
   },
 });
