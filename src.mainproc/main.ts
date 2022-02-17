@@ -5,8 +5,6 @@ import { app, protocol } from "electron";
 const isDevelopment = process.env.NODE_ENV !== "production";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 
-import pegar_dados from "./lib/sempapel/documentos/geral/pegar_dados";
-
 // Data Storage
 import "./lib/StorageManager";
 
