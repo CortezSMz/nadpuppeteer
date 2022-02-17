@@ -25,15 +25,16 @@ export default class StepIterator {
 
   private options: IteratorOptions;
 
-  constructor(
-    steps: Array<Step>,
-    options: IteratorOptions = { progress: true, delay: 250 }
-  ) {
+  constructor(steps: Array<Step>, options: IteratorOptions) {
     this.steps = steps;
 
     this.index = -1;
 
-    this.options = options;
+    this.options = {
+      ...options,
+      progress: true,
+      delay: 250,
+    };
   }
 
   public async iterate(): Promise<Record<string, unknown>> {
