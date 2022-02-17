@@ -27,7 +27,7 @@
               class="progress-icon"
               v-if="value > 0"
             >
-              {{ getIcon() }}
+              {{ icon }}
             </v-icon>
           </v-row>
         </v-container>
@@ -74,7 +74,6 @@ export default Vue.extend({
 
   methods: {
     setProgress(progress: ProgressOptions) {
-      console.log("setProgress", progress);
       if (progress.value >= 100) progress.value = 0;
       this.progress = {
         ...this.$root.$data.progress,
@@ -82,8 +81,10 @@ export default Vue.extend({
         visible: true,
       };
     },
+  },
 
-    getIcon() {
+  computed: {
+    icon(): string {
       return this.$root.$data.alert.icon;
     },
   },
