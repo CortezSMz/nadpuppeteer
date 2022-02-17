@@ -2,8 +2,6 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { contextBridge, ipcRenderer } = require("electron");
 
-console.log('Preload loaded!')
-
 contextBridge.exposeInMainWorld("api", {
   // show alert box on main window
   alert: (callback) => ipcRenderer.on("alert", (_, ...args) => callback(...args)),

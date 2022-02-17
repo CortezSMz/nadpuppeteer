@@ -20,8 +20,6 @@ Store.initRenderer();
 const escolas = new Store<StoreType>({ watch: true, name: "escolas" });
 
 escolas.onDidAnyChange((newValue, oldValue) => {
-  console.log("store.onDidChange", "newValue", newValue, "oldValue", oldValue);
-
   getWindow("MainWindow").window.webContents.send("updateEscolas", newValue);
 });
 
