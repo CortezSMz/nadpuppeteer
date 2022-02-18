@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-main>
-      <router-view />
+      <router-view style="padding: 0" />
     </v-main>
 
     <Alert />

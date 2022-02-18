@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container fluid style="padding: 0">
     <!-- APP-BAR -->
     <v-app-bar
       app
@@ -35,14 +35,14 @@
       <v-card-actions> </v-card-actions>
     </v-card>
 
-    <br />
-    <!-- CARDS -->
-    <v-expansion-panels accordion popout>
+    <br v-if="filtrando" />
+    <!-- ESCOLAS -->
+    <v-expansion-panels accordion hover>
       <v-expansion-panel v-for="[nome, dados] of filtro" :key="nome">
         <v-expansion-panel-header disable-icon-rotate>
           <template v-slot:default>
             <v-row no-gutters>
-              <v-col cols="10">
+              <v-col cols="8">
                 {{ nome }}
               </v-col>
               <v-col cols="2">
@@ -50,70 +50,123 @@
                   Object.keys(dados.processos).length > 1 ? "s" : ""
                 }}
               </v-col>
+              <v-col cols="2">
+                {{
+                  Object.values(dados.processos)
+                    .map((p) => p.pendencias.length)
+                    .reduce((t, c) => t + c)
+                }}
+                pendencias
+              </v-col>
             </v-row>
           </template>
           <template v-slot:actions>
-            <v-icon small> fa-folder </v-icon>
+            <v-icon small> fa-graduation-cap </v-icon>
           </template>
         </v-expansion-panel-header>
         <v-expansion-panel-content>
-          <v-row dense align="center" justify="center">
-            <v-col
-              cols="6"
+          <!-- PROCESSOS -->
+          <v-expansion-panels hover>
+            <v-expansion-panel
               v-for="[numero, dados] in Object.entries(dados.processos)"
               :key="numero"
             >
-              <v-card class="mx-auto">
-                <v-card-title> {{ numero }} </v-card-title>
-                <v-card-actions>
-                  <v-row>
-                    <v-col cols="12">
-                      <v-expansion-panels>
-                        <v-expansion-panel>
-                          <v-expansion-panel-header>
-                            Pendências
-                          </v-expansion-panel-header>
-                          <v-expansion-panel-content>
-                            {{ dados.pendencias }}
-                          </v-expansion-panel-content>
-                        </v-expansion-panel>
-                        <v-expansion-panel>
-                          <v-expansion-panel-header>
-                            Situação
-                          </v-expansion-panel-header>
-                          <v-expansion-panel-content>
-                            {{ dados.situacao }}
-                          </v-expansion-panel-content>
-                        </v-expansion-panel>
-                        <v-expansion-panel>
-                          <v-expansion-panel-header>
-                            Documentos
-                          </v-expansion-panel-header>
-                          <v-expansion-panel-content>
-                            {{ dados.documentos }}
-                          </v-expansion-panel-content>
-                        </v-expansion-panel>
-                      </v-expansion-panels>
+              <!-- HEADER -->
+              <v-expansion-panel-header disable-icon-rotate>
+                <template v-slot:default>
+                  <v-row no-gutters class="text-center">
+                    <!-- NUMERO DO PROCESSO -->
+                    <v-col cols="4" class="text-left">
+                      <a
+                        target="_blank"
+                        :href="`https://www.documentos.spsempapel.sp.gov.br/sigaex/app/expediente/doc/exibir?sigla=${numero}`"
+                        >{{ numero }}</a
+                      >
                     </v-col>
-                    <v-col cols="12">
-                      <v-select
-                        :ref="`select-${numero}`"
-                        :items="items"
-                        item-text="nome"
-                        item-value="value"
-                        label="Incluir documento"
-                        dense
-                        outlined
-                        prepend-inner-icon="fa-file"
-                        append-outer-icon="fa-plus"
-                        @click:append-outer="incluirDocumento(nome, numero)"
-                      ></v-select>
+                    <!-- SITUAÇÃO -->
+                    <v-col cols="3">
+                      {{ dados.situacao[0][1] }}
+                    </v-col>
+                    <!-- DOCUMENTOS PENDENTES -->
+                    <v-col cols="2">
+                      {{ dados.pendencias.length }} pendencias
+                    </v-col>
+                    <!-- ÚLTIMO UPDATE -->
+                    <v-col cols="3">
+                      Último update: {{ getTimeUpdate(dados.lastUpdate) }}
                     </v-col>
                   </v-row>
-                </v-card-actions>
-              </v-card>
-            </v-col>
-          </v-row>
+                </template>
+                <!-- HEADER ICON -->
+                <template v-slot:actions>
+                  <v-icon small> fa-folder </v-icon>
+                </template>
+              </v-expansion-panel-header>
+              <!-- CONTENT -->
+              <v-expansion-panel-content>
+                <template v-slot:default>
+                  <!-- INCLUIR DOCUMENTO -->
+                  <v-select
+                    :ref="`select-${numero}`"
+                    :items="items"
+                    item-text="nome"
+                    item-value="value"
+                    label="Incluir documento"
+                    dense
+                    outlined
+                    prepend-inner-icon="fa-file"
+                    append-outer-icon="fa-plus"
+                    @click:append-outer="incluirDocumento(nome, numero)"
+                  ></v-select>
+                  <!-- ATUALIZAR -->
+                  <v-btn @click="atualizarDados(nome, numero)"
+                    >ATUALIZAR PROCESSO</v-btn
+                  >
+                  <!-- PENDENCIAS -->
+                  {{ dados.pendencias }}
+                  <!-- DOCUMENTOS JUNTADOS -->
+                  <v-list>
+                    <v-list-group>
+                      <template v-slot:activator>
+                        <v-list-item-title>
+                          Documentos juntados:
+                        </v-list-item-title>
+                      </template>
+
+                      <v-list>
+                        <v-list-group
+                          v-for="[
+                            tempo,
+                            responsavel,
+                            acao,
+                            descricao,
+                          ] in dados.documentos"
+                          :key="descricao"
+                        >
+                          <template v-slot:activator>
+                            <v-list-item-title>
+                              {{ tempo }}
+                              -
+                              {{ responsavel }}
+                              -
+                              {{ acao }}
+                              -
+                              {{
+                                descricao.match(
+                                  /(?:SEDUC-\w{3}-[0-9]{4}\/[0-9]{0,10})/
+                                )
+                              }}
+                            </v-list-item-title>
+                          </template>
+                          {{ descricao }}
+                        </v-list-group>
+                      </v-list>
+                    </v-list-group>
+                  </v-list>
+                </template>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -128,9 +181,9 @@
 
 <script lang="ts">
 import Vue from "vue";
+import moment from "moment";
 
 import { ipcRenderer } from "electron";
-import { Escolas } from "@/main";
 declare var api: {
   incluir: (
     password: string,
@@ -145,6 +198,9 @@ export default Vue.extend({
   name: "Processos",
 
   methods: {
+    moment() {
+      return moment();
+    },
     incluirDocumento(unidade: string, numero: string) {
       const doc = (this.$refs["select-" + numero] as Array<Vue>)[0]?.$data
         .selectedItems[0]?.value;
@@ -158,10 +214,20 @@ export default Vue.extend({
         doc
       );
     },
+
+    atualizarDados(unidade: string, numero: string): void {
+      api.pegarDados(unidade, numero);
+    },
+
+    getTimeUpdate(ms: number) {
+      moment.updateLocale("pt-br", {});
+      return moment(ms).calendar();
+    },
   },
 
   data() {
     return {
+      paineisEscolas: 0,
       escolas: this.$root.$data.escolas,
       filtrando: false,
       chipsEscolas: [
@@ -189,10 +255,6 @@ export default Vue.extend({
         {
           nome: "Informacao CAF - Autorizando baixa contabil",
           value: "INFORMACAO_CAF_AUTORIZANDO_BAIXA",
-        },
-        {
-          nome: "Pegar dados",
-          value: "PEGAR_DADOS",
         },
       ],
     };
