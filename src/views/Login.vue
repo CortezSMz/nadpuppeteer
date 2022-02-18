@@ -24,7 +24,6 @@ export default Vue.extend({
 
   data() {
     return {
-      teste: "#f00",
       tab: 0,
     };
   },
@@ -47,6 +46,11 @@ export default Vue.extend({
   components: {
     SemPapelLogin,
     GematLogin,
+  },
+
+  beforeMount() {
+    this.$vuetify.theme.themes.light = themes.sempapel.light;
+    this.$vuetify.theme.themes.dark = themes.sempapel.dark;
   },
 });
 </script>
