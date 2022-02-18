@@ -39,7 +39,7 @@ export const themes = {
   },
   gemat: {
     light: {
-      primary: "#ffff00",
+      primary: "#ffffff",
       secondary: "#990000",
       accent: "",
       error: "#dc3545",
