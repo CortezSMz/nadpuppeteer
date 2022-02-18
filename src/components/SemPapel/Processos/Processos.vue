@@ -1,18 +1,11 @@
 <template>
   <v-container fluid style="padding: 0">
     <!-- APP-BAR -->
-    <v-app-bar
-      app
-      clipped-left
-      color="primary"
-      dark
-      elevation="0"
-      height="50px"
-    >
-      <v-app-bar-nav-icon>
+    <v-app-bar app clipped-left color="secondary" elevation="1">
+      <v-app-bar-nav-icon @click="toggleDrawer">
         <v-icon> fa-bars </v-icon>
       </v-app-bar-nav-icon>
-      <v-app-bar-title>Inservíveis</v-app-bar-title>
+      <v-app-bar-title>Listar processos</v-app-bar-title>
       <v-spacer></v-spacer>
       <v-btn icon @click="filtrando = !filtrando">
         <v-icon>fa-filter</v-icon>
@@ -198,9 +191,10 @@ export default Vue.extend({
   name: "Processos",
 
   methods: {
-    moment() {
-      return moment();
+    toggleDrawer() {
+      return this.$emit("toggleDrawer");
     },
+
     incluirDocumento(unidade: string, numero: string) {
       const doc = (this.$refs["select-" + numero] as Array<Vue>)[0]?.$data
         .selectedItems[0]?.value;
@@ -222,6 +216,14 @@ export default Vue.extend({
     getTimeUpdate(ms: number) {
       moment.updateLocale("pt-br", {});
       return moment(ms).calendar();
+    },
+  },
+
+  computed: {
+    filtro(): Array<unknown> {
+      return this.chipsEscolas.map(
+        (i: number) => Object.entries(this.escolas)[i]
+      );
     },
   },
 
@@ -258,14 +260,6 @@ export default Vue.extend({
         },
       ],
     };
-  },
-
-  computed: {
-    filtro(): Array<unknown> {
-      return this.chipsEscolas.map(
-        (i: number) => Object.entries(this.escolas)[i]
-      );
-    },
   },
 });
 </script>
