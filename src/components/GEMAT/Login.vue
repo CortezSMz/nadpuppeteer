@@ -3,7 +3,7 @@
     <v-row class="text-center" align="center" justify="center">
       <v-col cols="12" sm="6">
         <div>
-          <v-alert icon="fa-wrench" type="warning" prominent
+          <v-alert icon="fa-wrench" type="secondary" prominent
             >Em construção.</v-alert
           >
         </div>
@@ -14,6 +14,7 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { themes } from "../../plugins/vuetify";
 
 export default Vue.extend({
   name: "LoginGemat",

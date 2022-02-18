@@ -19,7 +19,7 @@
             autofocus
             prepend-inner-icon="fa-user"
             @keyup="username = username.toUpperCase()"
-            color="#34b44c"
+            color="primary"
           ></v-text-field>
 
           <v-text-field
@@ -32,10 +32,10 @@
             filled
             prepend-inner-icon="fa-lock"
             @click:append="show = !show"
-            color="#34b44c"
+            color="primary"
           ></v-text-field>
 
-          <v-btn large color="#007bff" dark @click="entrar">
+          <v-btn large color="accent" dark @click="entrar">
             <v-icon left>fa-sign-in-alt</v-icon>
             Entrar</v-btn
           >
@@ -47,6 +47,7 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { themes } from "../../plugins/vuetify";
 
 import { ipcRenderer } from "electron";
 declare var api: {

@@ -1,19 +1,11 @@
 <template>
   <v-app-bar app>
-    <v-tabs
-      v-model="tab"
-      :background-color="theme.background"
-      :slider-color="theme.slide"
-      :color="theme.font"
-      icons-and-text
-      centered
-      grow
-    >
-      <v-tab>SPSemPapel</v-tab>
+    <v-tabs v-model="tab" :color="primary" centered grow :dark="tab === 1">
+      <v-tab class="secondary">SPSemPapel</v-tab>
       <v-tab-item>
         <SemPapelLogin />
       </v-tab-item>
-      <v-tab>GEMAT</v-tab>
+      <v-tab class="secondary">GEMAT</v-tab>
       <v-tab-item>
         <GematLogin />
       </v-tab-item>
@@ -25,32 +17,29 @@
 import Vue from "vue";
 import GematLogin from "../components/GEMAT/Login.vue";
 import SemPapelLogin from "../components/SemPapel/Login.vue";
+import { themes } from "../plugins/vuetify";
 
 export default Vue.extend({
   name: "Login",
 
   data() {
     return {
+      teste: "#f00",
       tab: 0,
     };
   },
 
-  computed: {
-    theme() {
-      switch (this.tab) {
+  watch: {
+    tab(t) {
+      switch (t) {
         case 1:
-          return {
-            slide: "white",
-            font: "white",
-            background: "#900",
-          };
+          this.$vuetify.theme.themes.light = themes.gemat.light;
+          this.$vuetify.theme.themes.dark = themes.gemat.dark;
+          break;
         case 0:
         default:
-          return {
-            slide: "#34b44c",
-            font: "#34b44c",
-            background: "#d1e6df",
-          };
+          this.$vuetify.theme.themes.light = themes.sempapel.light;
+          this.$vuetify.theme.themes.dark = themes.sempapel.dark;
       }
     },
   },
