@@ -1,3 +1,4 @@
+import moment from "moment";
 import { ipcMain } from "electron";
 import StepIterator from "../lib/StepIterator";
 import { getEscola, setEscola } from "../lib/StorageManager";
@@ -32,6 +33,8 @@ ipcMain.on("pegarDados", async (_, unidade: string, processo: string) => {
   if (response.pendencias)
     dados.processos[processo].pendencias =
       response.pendencias as unknown as Array<string>;
+
+  dados.processos[processo].lastUpdate = moment().valueOf();
 
   setEscola(unidade, dados);
 });

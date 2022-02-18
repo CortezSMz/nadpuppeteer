@@ -4,6 +4,7 @@ import { getWindow } from "./WindowManager";
 interface Escola {
   processos: {
     [key: string]: {
+      lastUpdate: number;
       pendencias: Array<string>;
       documentos: Array<string>;
       situacao: Array<string>;
