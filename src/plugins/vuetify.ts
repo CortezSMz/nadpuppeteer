@@ -1,10 +1,11 @@
 import Vue from "vue";
 import Vuetify from "vuetify/lib/framework";
 
+// TODO(themes): make something unique for each theme
 export const themes = {
   default: {
     light: {
-      primary: "#FF0000",
+      primary: "#36393f",
       secondary: "#6c757d",
       accent: "#17a2b8",
       error: "#dc3545",
@@ -26,7 +27,6 @@ export const themes = {
       success: "#28a745",
       warning: "#FE5000",
     },
-    // TODO(themes): implement dark theme for sempapel
     dark: {
       primary: "#34b44c",
       secondary: "#d1e6df",
@@ -37,7 +37,6 @@ export const themes = {
       warning: "#FE5000",
     },
   },
-  // TODO(themes): implement themes for GEMAT
   gemat: {
     light: {
       primary: "#ffff00",
