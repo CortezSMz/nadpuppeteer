@@ -1,6 +1,6 @@
 <template>
   <v-app-bar app>
-    <v-tabs v-model="tab" :color="primary" centered grow :dark="tab === 1">
+    <v-tabs v-model="tab" color="primary" centered grow :dark="tab === 1">
       <v-tab class="secondary">SPSemPapel</v-tab>
       <v-tab-item>
         <SemPapelLogin />

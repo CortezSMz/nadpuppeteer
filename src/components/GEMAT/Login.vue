@@ -3,7 +3,7 @@
     <v-row class="text-center" align="center" justify="center">
       <v-col cols="12" sm="6">
         <div>
-          <v-alert icon="fa-wrench" type="secondary" prominent
+          <v-alert icon="fa-wrench" type="error" prominent
             >Em construção.</v-alert
           >
         </div>

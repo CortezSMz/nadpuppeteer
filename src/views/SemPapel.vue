@@ -8,6 +8,7 @@
 <script lang="ts">
 import Vue from "vue";
 import UI from "../components/SemPapel/UI.vue";
+import { themes } from "../plugins/vuetify";
 
 export default Vue.extend({
   name: "SemPapel",
@@ -24,6 +25,11 @@ export default Vue.extend({
 
   methods: {
     //
+  },
+
+  beforeMount() {
+    this.$vuetify.theme.themes.light = themes.sempapel.light;
+    this.$vuetify.theme.themes.dark = themes.sempapel.dark;
   },
 });
 </script>
