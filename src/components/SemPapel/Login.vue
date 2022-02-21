@@ -2,12 +2,7 @@
   <v-container fill-height style="height: 90vh">
     <v-row class="text-center" align="center" justify="center">
       <v-col cols="12" sm="6">
-        <v-img
-          :src="require('../../assets/SemPapel/logo-sem-papel-cor.png')"
-          class="my-3"
-          contain
-          height="100"
-        />
+        <Logo :letras="true" :quadrados="true" :animado="true" />
 
         <v-form>
           <v-text-field
@@ -47,7 +42,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { themes } from "../../plugins/vuetify";
+import Logo from "./Logo.vue";
 
 import { ipcRenderer } from "electron";
 declare var api: {
@@ -59,6 +54,10 @@ declare var api: {
 
 export default Vue.extend({
   name: "LoginSemPapel",
+
+  components: {
+    Logo,
+  },
 
   data() {
     return {

@@ -1,47 +1,46 @@
 <template>
-  <v-container style="padding: 0px">
-    <!-- DRAWER -->
-    <v-navigation-drawer
-      :mini-variant.sync="mini"
-      permanent
-      app
-      color="primary"
-      dark
-    >
-      <v-list dense>
-        <v-list-item style="padding: 0 20px 0 9px">
-          <v-row class="text-right">
-            <v-col style="padding: 0; margin: 0">
-              <v-btn icon @click.stop="mini = !mini">
-                <v-icon>{{ mini ? "fa-angle-right" : "fa-angle-left" }}</v-icon>
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-list-item>
-        <v-divider></v-divider>
-        <v-list-item v-for="item in items" :key="item.title" :to="item.route">
-          <v-list-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-icon>
+  <!-- DRAWER -->
+  <!-- :mini-variant.sync="mini" -->
+  <v-navigation-drawer mini-variant permanent app color="secondary" light>
+    <v-list>
+      <v-list-item class="px-2">
+        <Logo
+          :quadrados="'60px'"
+          :animado="true"
+          :borda="'var(--v-secondary-base)'"
+        />
+      </v-list-item>
 
-          <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-  </v-container>
+      <v-list-item v-for="item in items" :key="item.title" :to="item.route">
+        <v-tooltip right nudge-right="10" transition="scroll-x-transition">
+          <template v-slot:activator="{ on, attrs }">
+            <v-list-item-icon v-bind="attrs" v-on="on">
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-icon>
+          </template>
+          <span>{{ item.title }}</span>
+        </v-tooltip>
+        <v-list-item-content>
+          <v-list-item-title v-text="item.title"></v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+    </v-list>
+  </v-navigation-drawer>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
+import Logo from "./Logo.vue";
 
 export default Vue.extend({
-  name: "UISemPapel",
+  name: "UI",
+
+  components: {
+    Logo,
+  },
 
   data() {
     return {
-      mini: true,
       items: [
         {
           title: "Inservíveis",
@@ -55,10 +54,6 @@ export default Vue.extend({
         },
       ],
     };
-  },
-
-  methods: {
-    //
   },
 });
 </script>
