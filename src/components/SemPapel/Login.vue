@@ -78,7 +78,7 @@ export default Vue.extend({
 
     entrarSucesso: function (creds: { username: string; password: string }) {
       this.$root.$data.credentials.sempapel = creds;
-      this.$router.push("/sempapel/processos");
+      this.$router.push("/sempapel/inserviveis");
     },
   },
 

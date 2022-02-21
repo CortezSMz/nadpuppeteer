@@ -4,8 +4,8 @@ import Login from "../views/Login.vue";
 
 // SPSemPapel
 import SemPapel from "../views/SemPapel.vue";
-import Processos from "../components/SemPapel/Processos/Processos.vue";
-import Incluir from "../components/SemPapel/Processos/Incluir.vue";
+import Inserviveis from "../components/SemPapel/Inserviveis.vue";
+import Escolas from "../components/SemPapel/Escolas.vue";
 
 Vue.use(VueRouter);
 
@@ -21,14 +21,14 @@ const routes: Array<RouteConfig> = [
     component: SemPapel,
     children: [
       {
-        path: "/sempapel/processos",
-        name: "Processos",
-        component: Processos,
+        path: "/sempapel/inserviveis",
+        name: "Inserviveis",
+        component: Inserviveis,
       },
       {
-        path: "/sempapel/incluir",
-        name: "Incluir Processo",
-        component: Incluir,
+        path: "/sempapel/escolas",
+        name: "Escolas",
+        component: Escolas,
       },
     ],
   },
