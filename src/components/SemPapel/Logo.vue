@@ -8,7 +8,9 @@
           xmlns:xlink="http://www.w3.org/1999/xlink"
           x="0px"
           y="0px"
-          :viewBox="this.letras ? '0 0 1199.8 308.4' : '300.55 0 601.1 308.4'"
+          :viewBox="
+            this.letras ? '308.4 0 599.8 308.4' : '300.55 0 601.1 308.4'
+          "
           xml:space="preserve"
         >
           <g class="quadrado" id="quadrado20">
@@ -436,7 +438,7 @@ export default Vue.extend({
 
     sheet.innerHTML = `
     #quadrados {
-      width: ${typeof this.quadrados !== "string" ? "100vh" : this.quadrados}
+      width: ${typeof this.quadrados !== "string" ? "50vh" : this.quadrados}
     }
     #letras {
       width: ${typeof this.letras !== "string" ? "100vh" : this.letras}

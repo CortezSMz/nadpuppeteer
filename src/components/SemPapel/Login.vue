@@ -3,7 +3,8 @@
     <v-row class="text-center" align="center" justify="center">
       <v-col cols="12" sm="6">
         <Logo :letras="true" :quadrados="true" :animado="true" />
-
+        <br />
+        <br />
         <v-form>
           <v-text-field
             v-model="username"
