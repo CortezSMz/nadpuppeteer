@@ -120,8 +120,8 @@
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" text @click="close"> Cancelar </v-btn>
-            <v-btn color="blue darken-1" text @click="save">
+            <v-btn color="accent" text @click="close"> Cancelar </v-btn>
+            <v-btn color="accent" text @click="save">
               {{ tabs === 0 ? "Adicionar" : "Autuar" }}
             </v-btn>
           </v-card-actions>
@@ -130,17 +130,14 @@
 
       <v-dialog v-model="dialogDelete" max-width="500px">
         <v-card>
-          <v-card-title class="text-h5"
-            >Are you sure you want to delete this item?</v-card-title
+          <v-card-title class="text-h5 text-center"
+            >Você tem certeza que deseja parar de<br />
+            seguir esse processo?</v-card-title
           >
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" text @click="closeDelete"
-              >Cancel</v-btn
-            >
-            <v-btn color="blue darken-1" text @click="deleteItemConfirm"
-              >OK</v-btn
-            >
+            <v-btn color="accent" text @click="closeDelete">Cancel</v-btn>
+            <v-btn color="accent" text @click="deleteItemConfirm">Sim</v-btn>
             <v-spacer></v-spacer>
           </v-card-actions>
         </v-card>
@@ -150,18 +147,25 @@
     <!-- TABELA -->
     <v-data-table :headers="headers" :items="processos">
       <template v-slot:[`item.atualizar`]="{ item }">
-        <v-icon small @click="atualizarProcesso(item)"> fa-rotate </v-icon>
+        <v-icon small @click="atualizarProcesso(escola.text, item)">
+          fa-rotate
+        </v-icon>
       </template>
       <template v-slot:[`item.editar`]="{ item }">
-        <v-icon small class="mr-2" @click="edit(item)"> fa-pencil </v-icon>
+        <v-icon small class="mr-2" @click="editItem(escola.text, item)">
+          fa-pencil
+        </v-icon>
       </template>
       <template v-slot:[`item.deletar`]="{ item }">
-        <v-icon small @click="deletarProcesso(item)"> fa-xmark </v-icon>
+        <v-icon small @click="deletarProcesso(escola.text, item)">
+          fa-xmark
+        </v-icon>
       </template>
       <template v-slot:no-data>
-        Selecione uma escola para visualizar os processos
+        {{ noData }}
       </template>
     </v-data-table>
+    {{ escola }}
   </v-container>
 </template>
 
@@ -174,6 +178,16 @@
 <script lang="ts">
 import Vue from "vue";
 
+interface DataEscola {
+  processos: {
+    [key: string]: {
+      pendencias: string[];
+      documentos: string[];
+      situacao: string[];
+    };
+  };
+}
+
 export default Vue.extend({
   name: "Escolas",
 
@@ -181,22 +195,14 @@ export default Vue.extend({
     processoExistente: string;
     tabs: number;
     autuar: boolean;
-    escola: string;
+    escola: null | { text: string };
     rules: { required: (value: string) => boolean | string };
     comboboxEscola: {
       editing: null;
       items: (
         | {
             text: string;
-            data: null | {
-              processos: {
-                [key: string]: {
-                  pendencias: string[];
-                  documentos: string[];
-                  situacao: string[];
-                };
-              };
-            };
+            data?: DataEscola;
           }
         | {
             header: string;
@@ -218,11 +224,9 @@ export default Vue.extend({
       | {
           numero: string;
           data: {
-            [key: string]: {
-              pendencias: string[];
-              documentos: string[];
-              situacao: string[];
-            };
+            pendencias: string[];
+            documentos: string[];
+            situacao: string[];
           };
         }[]
       | [];
@@ -242,7 +246,7 @@ export default Vue.extend({
           'Preencher no formato: "SEDUC-EXP-0000/12345678".',
       },
       tabs: 0,
-      escola: "",
+      escola: null,
       autuar: false,
       comboboxEscola: {
         editing: null,
@@ -301,48 +305,60 @@ export default Vue.extend({
 
   computed: {
     formTitle(): string {
-      return this.editedIndex === -1
-        ? `Adicionar processo\npara ${this.escola}`
-        : "Editar processo";
+      return this.editedIndex !== -1 || !this.escola?.text
+        ? `Editar processo ${this.editedItem.numero}`
+        : `Adicionar processo para ${this.escola.text}`;
+    },
+    noData(): string {
+      return this.escola
+        ? "Você ainda não está seguindo nenhum processo desta escola"
+        : "Selecione uma escola para visualizar os processos";
     },
   },
 
   watch: {
-    escola(val, prev): void | Array<unknown> {
-      if (!val) return (this.processos = []);
-
-      if (prev === "" || val.length === prev?.length) {
-        return this.fillProcessos(val.data.processos);
+    escola(
+      val:
+        | string
+        | {
+            text: string;
+            data?: DataEscola;
+          },
+      prev: {
+        text: string;
+        data?: DataEscola;
+      }
+    ): void | Array<unknown> {
+      if (val == null || !val) {
+        return (this.processos = []);
       }
 
       if (typeof val === "string") {
-        this.escola = val;
-        this.comboboxEscola.items.push({
-          text: val,
-          data: null,
-        });
+        this.escola = { text: val };
+        // this.comboboxEscola.items.push(val);
+        // TODO: refactor so it push to DB
+      }
+
+      if (typeof val === "object" && val.text !== prev?.text) {
+        this.fillProcessos(val.data);
       }
     },
 
-    /*     dialog(val) {
+    dialog(val) {
       val || this.close();
     },
     dialogDelete(val) {
       val || this.closeDelete();
-    }, */
+    },
   },
 
   methods: {
-    fillProcessos(data: {
-      processos: {
-        [key: string]: {
-          pendencias: Array<string>;
-          documentos: Array<string>;
-          situacao: Array<string>;
-        };
-      };
-    }): void {
-      this.processos = Object.entries(data).map((e) => {
+    fillProcessos(data: DataEscola | undefined): void | Array<unknown> {
+      if (!data) {
+        return (this.processos = []);
+      }
+
+      this.processos = Object.entries(data.processos).map((e) => {
         return {
           numero: e[0],
           data: e[1],
@@ -350,32 +366,28 @@ export default Vue.extend({
       });
     },
 
-    /*     editItem(item: {
-      name: string;
-      calories: number;
-      fat: number;
-      carbs: number;
-      protein: number;
-    }) {
-      this.editedIndex = this.desserts.indexOf(item);
+    atualizarProcesso(escola: string, processo: { numero: string }) {
+      console.log(escola, processo.numero);
+    },
+
+    editItem(escola: string, item: { numero: string }) {
+      this.editedIndex = this.processos.findIndex(
+        (p) => item.numero === p.numero
+      );
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
 
-    deleteItem(item: {
-      name: string;
-      calories: number;
-      fat: number;
-      carbs: number;
-      protein: number;
-    }) {
-      this.editedIndex = this.desserts.indexOf(item);
-      this.editedItem = Object.assign({}, item);
+    deletarProcesso(escola: string, processo: { numero: string }) {
+      this.editedIndex = this.processos.findIndex(
+        (p) => processo.numero === p.numero
+      );
+      this.editedItem = Object.assign({}, processo);
       this.dialogDelete = true;
     },
 
     deleteItemConfirm() {
-      this.desserts.splice(this.editedIndex, 1);
+      this.processos.splice(this.editedIndex, 1);
       this.closeDelete();
     },
 
@@ -397,21 +409,21 @@ export default Vue.extend({
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem);
+        Object.assign(this.processos[this.editedIndex], this.editedItem);
       } else {
-        this.desserts.push(this.editedItem);
+        this.processos.push(this.editedItem as unknown as never);
       }
       this.close();
-    }, */
+    },
 
     del(item: null) {
-      this.escola = "";
+      this.escola = null;
       this.comboboxEscola.items = this.comboboxEscola.items.filter(
         (i) => i !== item
       );
     },
 
-    edit(item: null) {
+    edit(escola: string, item: null) {
       if (!this.comboboxEscola.editing) {
         this.comboboxEscola.editing = item;
       } else {
@@ -443,15 +455,7 @@ export default Vue.extend({
         ...Object.entries(this.$root.$data.escolas).map((e) => {
           return {
             text: e[0],
-            data: e[1] as {
-              processos: {
-                [key: string]: {
-                  pendencias: string[];
-                  documentos: string[];
-                  situacao: string[];
-                };
-              };
-            },
+            data: e[1] as DataEscola,
           };
         }),
       ];
