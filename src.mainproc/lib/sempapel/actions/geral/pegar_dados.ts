@@ -54,14 +54,27 @@ export default [
         const elements = [];
 
         const div = document.getElementById("collapsePendencias");
+
         if (!div) return [];
 
-        for (const element of div.children) {
-          if (element)
-            elements.push([
-              element.toString().replace(/\[object\s|]/g, ""),
-              element.textContent.replace(/\t|\n/g, ""),
-            ]);
+        for (let i = 0; i < div.children.length; i++) {
+          if (!div.children[i]) continue;
+          let section: Record<string, Array<string> | string>;
+
+          const type = div.children[i].toString().replace(/\[object\s|]/g, "");
+
+          if (type.includes("ParagraphElement")) {
+            section = {
+              ...section,
+              [div.children[i].textContent.replace(/\t|\n/g, "")]: div.children[
+                i + 1
+              ].textContent
+                .replace(/\t|\n/g, "")
+                .split(" ")
+                .filter((e) => !!e.trim()),
+            };
+            elements.push(section);
+          }
         }
 
         return elements;

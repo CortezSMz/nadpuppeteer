@@ -3,7 +3,10 @@
     <!-- APP-BAR -->
     <v-app-bar app color="secondary" elevation="1" style="padding-top: 5px">
       <!-- SELECT ESCOLA -->
-      <v-app-bar-title style="overflow: visible">
+      <v-btn icon light color="accent" @click="goLeft" :disabled="!escola">
+        <v-icon>fa-circle-left</v-icon>
+      </v-btn>
+      <v-app-bar-title style="overflow: visible; width: 640px">
         <v-combobox
           v-model="escola"
           :filter="filter"
@@ -66,6 +69,10 @@
           </template>
         </v-combobox>
       </v-app-bar-title>
+      <v-btn icon light color="accent" @click="goRight">
+        <v-icon>fa-circle-right</v-icon>
+      </v-btn>
+
       <v-spacer></v-spacer>
       <!-- ADICIONAR/EDITAR PROCESSO DIALOG -->
       <v-dialog v-model="dialog" max-width="600px">
@@ -193,9 +200,176 @@
     </v-app-bar>
 
     <!-- TABELA -->
-    <v-data-table :headers="headers" :items="processos">
+    <v-data-table
+      :headers="headers"
+      :items="processos"
+      :options.sync="tableOptions"
+      :expanded.sync="expanded"
+      item-key="numero"
+      show-expand
+    >
+      <template v-slot:expanded-item="{ headers, item }">
+        <td :colspan="headers.length" style="padding: 0">
+          <v-container>
+            <v-card flat>
+              <v-card-subtitle>
+                <span>
+                  Última vez atualizado:
+                  {{ getTimeUpdate(item.data.lastUpdate) }}
+                </span>
+              </v-card-subtitle>
+              <!-- SITUAÇÃO -->
+              <v-divider></v-divider>
+              <v-card-actions>
+                <v-btn
+                  icon
+                  @click="
+                    expandedCardModel.situacao = !expandedCardModel.situacao
+                  "
+                >
+                  <v-icon>{{
+                    expandedCardModel.situacao
+                      ? "fa-chevron-up"
+                      : "fa-chevron-down"
+                  }}</v-icon>
+                </v-btn>
+                Situação
+              </v-card-actions>
+
+              <v-expand-transition>
+                <div v-show="expandedCardModel.situacao">
+                  <v-divider></v-divider>
+
+                  <v-card-text>
+                    <v-list-item
+                      v-for="situacao in item.data.situacao"
+                      :key="situacao.join('')"
+                    >
+                      <v-icon small left>fa-caret-right</v-icon>
+                      {{ situacao.filter((s) => !!s.trim()).join(" - ") }}
+                    </v-list-item>
+                  </v-card-text>
+                </div>
+              </v-expand-transition>
+
+              <!-- PENDÊNCIAS -->
+              <v-divider></v-divider>
+              <v-card-actions>
+                <v-btn
+                  icon
+                  @click="
+                    expandedCardModel.pendencias = !expandedCardModel.pendencias
+                  "
+                >
+                  <v-icon>{{
+                    expandedCardModel.pendencias
+                      ? "fa-chevron-up"
+                      : "fa-chevron-down"
+                  }}</v-icon>
+                </v-btn>
+
+                Pendências
+              </v-card-actions>
+
+              <v-expand-transition>
+                <div v-show="expandedCardModel.pendencias">
+                  <v-divider></v-divider>
+
+                  <v-card-text>
+                    <v-treeview
+                      :items="parsePendencias(item.data.pendencias)"
+                      open-all
+                    ></v-treeview>
+
+                    {{ item.data.pendencias }}
+                  </v-card-text>
+                </div>
+              </v-expand-transition>
+              <!-- DOCUMENTOS -->
+              <v-divider></v-divider>
+              <v-card-actions>
+                <v-btn
+                  icon
+                  @click="
+                    expandedCardModel.documentos = !expandedCardModel.documentos
+                  "
+                >
+                  <v-icon>{{
+                    expandedCardModel.documentos
+                      ? "fa-chevron-up"
+                      : "fa-chevron-down"
+                  }}</v-icon>
+                </v-btn>
+
+                Documentos
+              </v-card-actions>
+
+              <v-expand-transition>
+                <div v-show="expandedCardModel.documentos">
+                  <v-divider></v-divider>
+
+                  <v-card-text>
+                    <v-simple-table fixed-header dense>
+                      <template v-slot:default>
+                        <thead>
+                          <tr>
+                            <th>Tempo</th>
+                            <th>Unidade</th>
+                            <th>Evento</th>
+                            <th>Descrição</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr
+                            v-for="[tempo, unidade, evento, descricao] in item
+                              .data.documentos"
+                            :key="descricao"
+                          >
+                            <td>{{ tempo }}</td>
+                            <td>{{ unidade }}</td>
+                            <td>{{ evento }}</td>
+                            <td>{{ descricao }}</td>
+                          </tr>
+                        </tbody>
+                      </template>
+                    </v-simple-table>
+                  </v-card-text>
+                </div>
+              </v-expand-transition>
+              <v-divider></v-divider>
+            </v-card>
+          </v-container>
+        </td>
+      </template>
+      <template v-slot:[`item.situacao`]="{ item }">
+        {{
+          item.data && item.data.situacao.length > 0
+            ? item.data.situacao.map((s) =>
+                s
+                  .slice(1, s.length - 1)
+                  .filter((s) => !!s)
+                  .join(" - ")
+              )[0]
+            : "-"
+        }}
+      </template>
+      <template v-slot:[`item.pendencias`]="{ item }">
+        <!-- {{
+          item.data && item.data.pendencias.length > 0
+            ? item.data.pendencias
+                .find((p) => p[0].includes("UListElement"))[1]
+                .split(" ")
+                .filter((p) => !!p).length
+            : "0"
+        }} -->
+        {{
+          item.data.pendencias.reduce((a, c) => {
+            return a + Object.entries(c)[0][1].length;
+          }, 0)
+        }}
+      </template>
       <template v-slot:[`item.atualizar`]="{ item }">
-        <v-icon small @click="atualizarProcesso(escola.text, item)">
+        <v-icon small @click="atualizarDados(escola.text, item.numero)">
           fa-rotate
         </v-icon>
       </template>
@@ -217,6 +391,12 @@
 </template>
 
 <style>
+.col {
+  border: 1px solid red;
+}
+.row {
+  border: 1px solid blue;
+}
 .v-app-bar-title__content {
   width: 600px !important;
 }
@@ -224,6 +404,12 @@
 
 <script lang="ts">
 import Vue from "vue";
+import moment from "moment";
+
+import { ipcRenderer } from "electron";
+declare var api: {
+  atualizarDados: (unidade: string, processo: string) => void;
+};
 
 interface DataEscola {
   processos: {
@@ -244,9 +430,8 @@ export default Vue.extend({
       informacaoDiretor: null;
       documentacaoApm: null;
     };
-    processoExistente: string;
     tabs: number;
-    escola: null | { text: string };
+    escola: null | { text: string; data?: DataEscola };
     rules: {
       processo: (value: string) => boolean | string;
       required: (value: unknown) => boolean | string;
@@ -267,13 +452,26 @@ export default Vue.extend({
     };
     dialog: boolean;
     dialogDelete: boolean;
+    tableOptions: Record<string, unknown>;
+    expanded: Array<unknown>;
+    expandedCardModel: {
+      pendencias: boolean;
+      documentos: boolean;
+      situacao: boolean;
+    };
     headers: {
-      text?: string;
-      value?: string;
-      align?: string;
-      width?: number;
-      divider?: boolean;
+      text: string;
+      value: string;
+      align?: "start" | "center" | "end";
       sortable?: boolean;
+      filterable?: boolean;
+      groupable?: boolean;
+      divider?: boolean;
+      class?: string | string[];
+      cellClass?: string | string[];
+      width?: string | number;
+      filter?: (value: unknown, search: string, item: unknown) => boolean;
+      sort?: (a: unknown, b: unknown) => number;
     }[];
     processos:
       | {
@@ -299,7 +497,6 @@ export default Vue.extend({
         informacaoDiretor: null,
         documentacaoApm: null,
       },
-      processoExistente: "",
       rules: {
         processo: (value) =>
           /^SEDUC-(?:EXP|PRC)-[0-9]{4}\/[0-9]{4,10}$/.test(value) ||
@@ -317,16 +514,44 @@ export default Vue.extend({
             header:
               "Selecione a escola ou comece a digitar para criar uma nova",
           },
+          // TODO: adicionar opção para ver todos os processos de todas as escolas
         ],
         search: null,
       },
       dialog: false,
       dialogDelete: false,
+      tableOptions: {},
+      expanded: [],
+      expandedCardModel: {
+        pendencias: false,
+        documentos: false,
+        situacao: false,
+      },
       headers: [
+        {
+          text: "",
+          value: "data-table-expand",
+          align: "center",
+          width: 10,
+          sortable: false,
+        },
         {
           text: "Processos",
           align: "start",
           value: "numero",
+          divider: true,
+        },
+        {
+          text: "Situação",
+          align: "start",
+          value: "situacao",
+          divider: true,
+        },
+        {
+          text: "Pendências",
+          value: "pendencias",
+          align: "center",
+          width: 110,
           divider: true,
         },
         {
@@ -415,6 +640,39 @@ export default Vue.extend({
   },
 
   methods: {
+    /* API */
+    atualizarDados(unidade: string, numero: string): void {
+      api.atualizarDados(unidade, numero);
+    },
+    /* PAGE */
+    goLeft() {
+      const i = this.comboboxEscola.items.findIndex(
+        (ce) => (ce as { text: string }).text === this.escola?.text
+      );
+      this.escola = this.comboboxEscola.items[i - 1] as {
+        text: string;
+        data?: DataEscola | undefined;
+      };
+    },
+    goRight() {
+      const i = this.comboboxEscola.items.findIndex(
+        (ce) => (ce as { text: string }).text === this.escola?.text
+      );
+      this.escola = this.comboboxEscola.items[i + 1] as {
+        text: string;
+        data?: DataEscola | undefined;
+      };
+    },
+    parsePendencias(pendencias: Array<Array<string>>) {
+      let parsed = [{}];
+
+      return pendencias;
+    },
+    getTimeUpdate(ms: number) {
+      moment.updateLocale("pt-br", {});
+      return moment(ms).calendar();
+    },
+
     fillProcessos(data: DataEscola | undefined): void | Array<unknown> {
       if (!data) {
         return (this.processos = []);
@@ -426,10 +684,6 @@ export default Vue.extend({
           data: e[1],
         };
       });
-    },
-
-    atualizarProcesso(escola: string, processo: { numero: string }) {
-      console.log(escola, processo.numero);
     },
 
     editItem(escola: string, item: { numero: string }) {

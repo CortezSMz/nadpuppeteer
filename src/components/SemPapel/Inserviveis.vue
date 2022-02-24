@@ -184,7 +184,7 @@ declare var api: {
     processo: string,
     doc: string
   ) => void;
-  pegarDados: (unidade: string, processo: string) => void;
+  atualizarDados: (unidade: string, processo: string) => void;
 };
 
 export default Vue.extend({
@@ -195,7 +195,7 @@ export default Vue.extend({
       const doc = (this.$refs["select-" + numero] as Array<Vue>)[0]?.$data
         .selectedItems[0]?.value;
 
-      if (doc === "PEGAR_DADOS") return api.pegarDados(unidade, numero);
+      if (doc === "PEGAR_DADOS") return api.atualizarDados(unidade, numero);
 
       api.incluir(
         this.$root.$data.credentials.sempapel.password,
@@ -206,7 +206,7 @@ export default Vue.extend({
     },
 
     atualizarDados(unidade: string, numero: string): void {
-      api.pegarDados(unidade, numero);
+      api.atualizarDados(unidade, numero);
     },
 
     getTimeUpdate(ms: number) {

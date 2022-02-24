@@ -11,7 +11,7 @@ import "./lib/StorageManager";
 import { createMainWindow } from "./windows/MainWindow";
 
 // IPC events
-import "./ipc/pegarDados";
+import "./ipc/atualizarDados";
 import "./ipc/incluirDocumento";
 import "./ipc/getEscolas";
 import "./ipc/entrar";

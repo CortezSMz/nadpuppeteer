@@ -19,8 +19,8 @@ contextBridge.exposeInMainWorld("api", {
   },
 
   // incluir documento sem papel
-  pegarDados: (unidade, processo) =>
-    ipcRenderer.send("pegarDados", unidade, processo),
+  atualizarDados: (unidade, processo) =>
+    ipcRenderer.send("atualizarDados", unidade, processo),
 
     // incluir documento sem papel
   incluir: (password, unidade, processo, doc) =>
