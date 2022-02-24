@@ -2,8 +2,8 @@
   <v-container fluid style="padding: 0">
     <!-- APP-BAR -->
     <v-app-bar app color="secondary" elevation="1" style="padding-top: 5px">
+      <!-- SELECT ESCOLA -->
       <v-app-bar-title style="overflow: visible">
-        <!-- SELECT ESCOLA -->
         <v-combobox
           v-model="escola"
           :filter="filter"
@@ -14,12 +14,12 @@
           clearable
           height="40px"
           clear-icon="fa-xmark"
-          label="Selecione uma escola"
+          :label="!escola ? 'Selecione uma escola' : 'Visualizando'"
           @focus="fetchEscolas"
           style="margin-top: 35px"
         >
           <!-- NO DATA -->
-          <template v-slot:no-data style="width: 600px">
+          <template v-slot:no-data>
             <v-list-item>
               <span class="subheading">
                 Pressione <strong>enter</strong> para criar escola com nome:
@@ -31,7 +31,7 @@
           </template>
           <!-- SELECTION -->
           <template v-slot:selection="{ item }">
-            <span class="text-h5">{{ item.text }}</span>
+            <span class="text-h6">{{ item.text }}</span>
           </template>
           <!-- ITEM LIST -->
           <template v-slot:item="{ item }">
@@ -67,8 +67,8 @@
         </v-combobox>
       </v-app-bar-title>
       <v-spacer></v-spacer>
-      <!-- BUTTONS -->
-      <v-dialog v-model="dialog" max-width="500px">
+      <!-- ADICIONAR/EDITAR PROCESSO DIALOG -->
+      <v-dialog v-model="dialog" max-width="600px">
         <template v-slot:activator="{ on, attrs }">
           <v-btn
             color="accent"
@@ -80,6 +80,7 @@
             <v-icon left>fa-plus</v-icon> PROCESSO
           </v-btn>
         </template>
+        <!-- DIALOG CARD -->
         <v-card>
           <v-app-bar>
             <v-app-bar-title style="margin: 0 auto">
@@ -88,7 +89,7 @@
               }}</span>
             </v-app-bar-title>
 
-            <template v-slot:extension>
+            <template v-slot:extension v-if="this.editedIndex === -1">
               <v-tabs v-model="tabs" centered color="accent" grow>
                 <v-tab> Existente </v-tab>
                 <v-tab> Autuar novo </v-tab>
@@ -100,20 +101,60 @@
             <v-tab-item>
               <v-card flat>
                 <v-card-text>
-                  <v-text-field
-                    v-model="processoExistente"
-                    label="Número do processo"
-                    prepend-inner-icon="fa-hashtag"
-                    :rules="[rules.required]"
-                    autofocus
-                    @keyup="processoExistente = processoExistente.toUpperCase()"
-                  ></v-text-field>
+                  <v-form ref="formNumeroProcesso" lazy-validation>
+                    <v-text-field
+                      v-model="editedItem.numero"
+                      label="Número do processo"
+                      prepend-inner-icon="fa-hashtag"
+                      :rules="[rules.processo]"
+                      autofocus
+                      @keyup="
+                        editedItem.numero = editedItem.numero.toUpperCase()
+                      "
+                    ></v-text-field>
+                  </v-form>
                 </v-card-text>
               </v-card>
             </v-tab-item>
             <v-tab-item>
               <v-card flat>
-                <v-card-text>a</v-card-text>
+                <v-card-text>
+                  <v-form ref="formAutuarProcesso" lazy-validation>
+                    <!-- MAPA DE ARROLAMENTO -->
+                    <v-file-input
+                      :rules="[rules.fileSize, rules.required]"
+                      v-model="autuar.mapaDeArrolamento"
+                      truncate-length="50"
+                      accept=".pdf"
+                      outlined
+                      label="Mapa de Arrolamento"
+                      show-size
+                    >
+                    </v-file-input>
+                    <!-- INFORMAÇÃO DIRETOR -->
+                    <v-file-input
+                      :rules="[rules.fileSize, rules.required]"
+                      v-model="autuar.informacaoDiretor"
+                      truncate-length="50"
+                      accept=".pdf"
+                      outlined
+                      label="Informação diretor"
+                      show-size
+                    >
+                    </v-file-input>
+                    <!-- DOCUMENTAÇÃO APM -->
+                    <v-file-input
+                      :rules="[rules.fileSize, rules.required]"
+                      v-model="autuar.documentacaoApm"
+                      truncate-length="50"
+                      accept=".pdf"
+                      outlined
+                      label="Documentação APM"
+                      show-size
+                    >
+                    </v-file-input>
+                  </v-form>
+                </v-card-text>
               </v-card>
             </v-tab-item>
           </v-tabs-items>
@@ -122,12 +163,19 @@
             <v-spacer></v-spacer>
             <v-btn color="accent" text @click="close"> Cancelar </v-btn>
             <v-btn color="accent" text @click="save">
-              {{ tabs === 0 ? "Adicionar" : "Autuar" }}
+              {{
+                tabs === 0
+                  ? this.editedIndex === -1
+                    ? "Adicionar"
+                    : "Salvar"
+                  : "Autuar"
+              }}
             </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
 
+      <!-- CONFIRM DELETE DIALOG -->
       <v-dialog v-model="dialogDelete" max-width="500px">
         <v-card>
           <v-card-title class="text-h5 text-center"
@@ -165,7 +213,6 @@
         {{ noData }}
       </template>
     </v-data-table>
-    {{ escola }}
   </v-container>
 </template>
 
@@ -192,11 +239,19 @@ export default Vue.extend({
   name: "Escolas",
 
   data(): {
+    autuar: {
+      mapaDeArrolamento: null;
+      informacaoDiretor: null;
+      documentacaoApm: null;
+    };
     processoExistente: string;
     tabs: number;
-    autuar: boolean;
     escola: null | { text: string };
-    rules: { required: (value: string) => boolean | string };
+    rules: {
+      processo: (value: string) => boolean | string;
+      required: (value: unknown) => boolean | string;
+      fileSize: (value: { size: number }) => boolean | string;
+    };
     comboboxEscola: {
       editing: null;
       items: (
@@ -239,15 +294,22 @@ export default Vue.extend({
     };
   } {
     return {
+      autuar: {
+        mapaDeArrolamento: null,
+        informacaoDiretor: null,
+        documentacaoApm: null,
+      },
       processoExistente: "",
       rules: {
-        required: (value: string) =>
-          /^SEDUC-(?:EXP|PRC)-[0-9]{4}\/[0-9]{4,10}/.test(value) ||
+        processo: (value) =>
+          /^SEDUC-(?:EXP|PRC)-[0-9]{4}\/[0-9]{4,10}$/.test(value) ||
           'Preencher no formato: "SEDUC-EXP-0000/12345678".',
+        required: (value) => !!value || "Obrigatório.",
+        fileSize: (value) =>
+          !value || value.size < 1e7 || "Arquivo deve ser menor que 10MB",
       },
-      tabs: 0,
+      tabs: 1,
       escola: null,
-      autuar: false,
       comboboxEscola: {
         editing: null,
         items: [
@@ -305,9 +367,9 @@ export default Vue.extend({
 
   computed: {
     formTitle(): string {
-      return this.editedIndex !== -1 || !this.escola?.text
-        ? `Editar processo ${this.editedItem.numero}`
-        : `Adicionar processo para ${this.escola.text}`;
+      return this.editedIndex !== -1
+        ? `Editar número do processo`
+        : `Adicionar processo ${this.escola ? `para ${this.escola.text}` : ""}`;
     },
     noData(): string {
       return this.escola
@@ -371,6 +433,7 @@ export default Vue.extend({
     },
 
     editItem(escola: string, item: { numero: string }) {
+      this.tabs = 0;
       this.editedIndex = this.processos.findIndex(
         (p) => item.numero === p.numero
       );
@@ -407,8 +470,16 @@ export default Vue.extend({
       });
     },
 
-    save() {
+    save(): void {
+      if (this.tabs === 1) {
+        if (!this.$refs.formAutuarProcesso.validate()) return;
+        console.log("autuando");
+        console.log(this.autuar);
+
+        return;
+      }
       if (this.editedIndex > -1) {
+        if (!this.$refs.formNumeroProcesso.validate()) return;
         Object.assign(this.processos[this.editedIndex], this.editedItem);
       } else {
         this.processos.push(this.editedItem as unknown as never);

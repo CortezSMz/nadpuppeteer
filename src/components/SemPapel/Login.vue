@@ -5,7 +5,7 @@
         <Logo :letras="true" :quadrados="true" :animado="true" />
         <br />
         <br />
-        <v-form>
+        <v-form ref="loginForm">
           <v-text-field
             v-model="username"
             :rules="[rules.required]"
@@ -30,12 +30,12 @@
             @click:append="show = !show"
             color="primary"
           ></v-text-field>
-
-          <v-btn large color="accent" dark @click="entrar">
-            <v-icon left>fa-sign-in-alt</v-icon>
-            Entrar</v-btn
-          >
         </v-form>
+
+        <v-btn large color="accent" dark @click="entrar">
+          <v-icon left>fa-sign-in-alt</v-icon>
+          Entrar</v-btn
+        >
       </v-col>
     </v-row>
   </v-container>
@@ -72,19 +72,25 @@ export default Vue.extend({
   },
 
   methods: {
-    entrar: function () {
-      if (this.username && this.password)
-        api.entrar({ username: this.username, password: this.password });
+    entrar(): void {
+      if (
+        !(
+          this.$refs as unknown as { loginForm: { validate: () => boolean } }
+        ).loginForm.validate()
+      )
+        return;
+
+      api.entrar({ username: this.username, password: this.password });
     },
 
-    entrarSucesso: function (creds: { username: string; password: string }) {
+    entrarSucesso(creds: { username: string; password: string }): void {
       this.$root.$data.credentials.sempapel = creds;
       this.$router.push("/sempapel/inserviveis");
     },
   },
 
-  mounted() {
-    api.semPapelEntrarSucesso((creds) => {
+  mounted(): void {
+    api.semPapelEntrarSucesso((creds): void => {
       this.entrarSucesso(creds);
     });
   },
