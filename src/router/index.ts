@@ -5,7 +5,6 @@ import Login from "../views/Login.vue";
 // SPSemPapel
 import SemPapel from "../views/SemPapel.vue";
 import Inserviveis from "../components/SemPapel/Inserviveis.vue";
-import IncluirProcesso from "../components/SemPapel/IncluirProcesso.vue";
 
 Vue.use(VueRouter);
 
@@ -24,11 +23,6 @@ const routes: Array<RouteConfig> = [
         path: "/sempapel/inserviveis",
         name: "Inserviveis",
         component: Inserviveis,
-      },
-      {
-        path: "/sempapel/incluir",
-        name: "Incluir Processo",
-        component: IncluirProcesso,
       },
     ],
   },

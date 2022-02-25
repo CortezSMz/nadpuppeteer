@@ -1,7 +1,12 @@
 <template>
   <v-container>
-    <UI />
-    <router-view> </router-view>
+    <v-container style="padding: 0px">
+      <!-- ROUTER -->
+      <router-view> </router-view>
+
+      <!-- UI -->
+      <UI />
+    </v-container>
   </v-container>
 </template>
 
@@ -13,18 +18,8 @@ import { themes } from "../plugins/vuetify";
 export default Vue.extend({
   name: "SemPapel",
 
-  data() {
-    return {
-      //
-    };
-  },
-
   components: {
     UI,
-  },
-
-  methods: {
-    //
   },
 
   beforeMount() {

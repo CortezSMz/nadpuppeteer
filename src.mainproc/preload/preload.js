@@ -19,15 +19,31 @@ contextBridge.exposeInMainWorld("api", {
   },
 
   // incluir documento sem papel
-  pegarDados: (unidade, processo) =>
-    ipcRenderer.send("pegarDados", unidade, processo),
+  atualizarDados: (unidade, processo) =>
+    ipcRenderer.send("atualizarDados", unidade, processo),
 
     // incluir documento sem papel
   incluir: (password, unidade, processo, doc) =>
-    ipcRenderer.send("incluirInservivel", password, unidade, processo, doc),
+    ipcRenderer.send("incluirDocumento", password, unidade, processo, doc),
+
+  autuarProcesso: (username, password, unidade, docs) =>
+    ipcRenderer.send("autuarProcesso", username, password, unidade, docs),
 
   // StoreManager
   getEscolas: () => ipcRenderer.send("getEscolas"),
 
+  setEscola: (unidade, dados) => ipcRenderer.send("setEscola", unidade, dados),
+
+  delEscola: (unidade) => ipcRenderer.send("delEscola", unidade),
+
+  editEscola: (oldUnidade, newUnidade) => ipcRenderer.send("editEscola", oldUnidade, newUnidade),
+
+  addProcesso: (unidade, processo) => ipcRenderer.send("addProcesso", unidade, processo),
+
+  delProcesso: (unidade, processo) => ipcRenderer.send("delProcesso", unidade, processo),
+
+  editProcesso: (unidade, oldProcesso, newProcesso) => ipcRenderer.send("editProcesso", unidade, oldProcesso, newProcesso),
+
+  /* Update escolas on renderer */
   updateEscolas: (callback) =>  ipcRenderer.on("updateEscolas", (_, ...args) => callback(...args)),
 });

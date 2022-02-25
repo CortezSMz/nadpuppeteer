@@ -62,7 +62,7 @@ export async function createSubWindow(): Promise<Puppet> {
 
   subWindow.removeMenu();
 
-  // subWindow.setIgnoreMouseEvents(true);
+  subWindow.setIgnoreMouseEvents(true);
 
   subWindow.on("closed", () => {
     unregisterWindow("SubWindow");

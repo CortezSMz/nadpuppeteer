@@ -3,9 +3,9 @@
   <!-- :mini-variant.sync="mini" -->
   <v-navigation-drawer mini-variant permanent app color="secondary" light>
     <v-list>
-      <v-list-item class="px-2">
+      <v-list-item class="px-2" style="height: 56px">
         <Logo
-          :quadrados="'60px'"
+          :quadrados="'64px'"
           :animado="true"
           :borda="'var(--v-secondary-base)'"
         />
@@ -43,14 +43,9 @@ export default Vue.extend({
     return {
       items: [
         {
+          icon: "fa-book-open",
           title: "Inservíveis",
-          icon: "fa-folder-open",
           route: "/sempapel/inserviveis",
-        },
-        {
-          title: "Incluir processo",
-          icon: "fa-folder-plus",
-          route: "/sempapel/incluir",
         },
       ],
     };

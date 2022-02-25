@@ -1,14 +1,15 @@
 import moment from "moment";
 import { ipcMain } from "electron";
 import StepIterator from "../lib/StepIterator";
-import { getEscola, setEscola } from "../lib/StorageManager";
 import { PEGAR_DADOS } from "../lib/sempapel/actions/index";
+import { getEscola, getEscolas, setEscola } from "../lib/StorageManager";
 
-ipcMain.on("pegarDados", async (_, unidade: string, processo: string) => {
+const atualizarDados = async (_, unidade: string, processo: string) => {
   const iterator = new StepIterator(PEGAR_DADOS, {
     expect: ["documentos", "situacao", "pendencias"],
     data: { unidade, processo },
     alert: {
+      title: `${unidade}: ${processo}`,
       color: "blue",
       icon: "fa-pencil",
       position: "center",
@@ -37,4 +38,17 @@ ipcMain.on("pegarDados", async (_, unidade: string, processo: string) => {
   dados.processos[processo].lastUpdate = moment().valueOf();
 
   setEscola(unidade, dados);
-});
+};
+
+const atualizarDadosTodas = async () => {
+  const escolas = getEscolas();
+
+  for (const [nomeEscola, dadosEscola] of Object.entries(escolas)) {
+    for (const [numeroProcesso, _] of Object.entries(dadosEscola.processos)) {
+      await atualizarDados(null, nomeEscola, numeroProcesso);
+    }
+  }
+};
+
+ipcMain.on("atualizarDados", atualizarDados);
+ipcMain.on("atualizarDadosTodas", atualizarDadosTodas);

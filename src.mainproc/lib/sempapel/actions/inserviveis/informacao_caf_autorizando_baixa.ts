@@ -3,7 +3,7 @@ import type { Action, ActionsInserviveis } from "../../Actions";
 export default [
   {
     title: "Indo para inclusão de documento...",
-    do: async (page, { processo }) =>
+    do: async (page, { processo }: { processo: string }) =>
       page.goto(
         `https://www.documentos.spsempapel.sp.gov.br/sigaex/app/expediente/doc/editar?modelo=5515&mobilPaiSel.sigla=${processo.replace(
           /-|\//g,
@@ -18,11 +18,12 @@ export default [
   },
   {
     title: "Preenchendo interessado...",
-    do: (page, { unidade }) => page.type("#Interessado", unidade),
+    do: (page, { unidade }: { unidade: string }) =>
+      page.type("#Interessado", unidade),
   },
   {
     title: "Preenchendo referência...",
-    do: (page, { processo }) =>
+    do: (page, { processo }: { processo: string }) =>
       page.type(
         "#numeroDeReferencia",
         processo.replace(

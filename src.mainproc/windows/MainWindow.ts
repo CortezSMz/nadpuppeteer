@@ -23,8 +23,8 @@ export async function createMainWindow(): Promise<Puppet> {
     title: `NADPuppeteer - v${version as string}`,
     autoHideMenuBar: true,
     resizable: false,
-    width: 800,
-    height: 600,
+    width: 1000,
+    height: 700,
     webPreferences: {
       contextIsolation: true,
       preload: process.env.WEBPACK_DEV_SERVER_URL
