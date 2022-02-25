@@ -11,10 +11,17 @@ import "./lib/StorageManager";
 import { createMainWindow } from "./windows/MainWindow";
 
 // IPC events
+import "./ipc/entrar";
+import "./ipc/autuarProcesso";
 import "./ipc/atualizarDados";
 import "./ipc/incluirDocumento";
-import "./ipc/getEscolas";
-import "./ipc/entrar";
+import "./ipc/escolas/delEscola";
+import "./ipc/escolas/setEscola";
+import "./ipc/escolas/editEscola";
+import "./ipc/escolas/getEscolas";
+import "./ipc/processos/addProcesso";
+import "./ipc/processos/delProcesso";
+import "./ipc/processos/editProcesso";
 
 // These should be done before the app is ready
 protocol.registerSchemesAsPrivileged([

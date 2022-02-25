@@ -44,13 +44,8 @@ export default Vue.extend({
       items: [
         {
           icon: "fa-book-open",
-          title: "Processos Inservíveis",
+          title: "Inservíveis",
           route: "/sempapel/inserviveis",
-        },
-        {
-          icon: "fa-school",
-          title: "Escolas",
-          route: "/sempapel/escolas",
         },
       ],
     };

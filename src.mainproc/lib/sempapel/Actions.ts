@@ -11,6 +11,7 @@ export enum ActionsInserviveis {
 }
 
 export enum ActionsGerais {
+  AUTUAR_PROCESSO = "Autuar processo",
   PEGAR_DADOS = "Pegar dados",
   ENTRAR = "Entrar",
 }

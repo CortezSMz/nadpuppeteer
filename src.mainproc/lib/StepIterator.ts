@@ -6,12 +6,12 @@ export interface Step {
   title: string;
   do: (
     page: Page,
-    data?: { [key: string]: string }
+    data?: { [key: string]: unknown }
   ) => unknown | Record<string, unknown>;
 }
 
 interface IteratorOptions {
-  data?: { [key: string]: string };
+  data?: { [key: string]: unknown };
   expect?: Array<string>;
   progress?: boolean;
   delay?: number;
@@ -65,15 +65,22 @@ export default class StepIterator {
             const hasOwnProperty: boolean =
               Object.prototype.hasOwnProperty.call(response, ex);
 
-            if (hasOwnProperty)
+            if (hasOwnProperty) {
               responses = {
                 ...responses,
                 ...(response as unknown as Record<string, unknown>),
               };
+
+              this.options.data = {
+                ...this.options.data,
+                ...responses,
+              };
+            }
           }
       } catch (error) {
         this.prev();
         popAlert({ text: error, color: "error" });
+        console.log(error);
       }
 
       await sleep(this.options.delay);

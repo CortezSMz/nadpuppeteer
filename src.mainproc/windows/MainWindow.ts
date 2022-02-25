@@ -65,8 +65,6 @@ export async function createMainWindow(): Promise<Puppet> {
     }
   });
 
-  mainWindow.on("resize", () => console.log(mainWindow.getSize()));
-
   mainWindow.on("will-move", (_, pos: { x: number; y: number }) => {
     const subWindow = getWindow("SubWindow");
 

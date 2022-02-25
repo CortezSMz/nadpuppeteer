@@ -4,7 +4,7 @@ import * as documentos from "../lib/sempapel/actions/index";
 import { ActionsInserviveis } from "../lib/sempapel/Actions";
 
 ipcMain.on(
-  "incluirInservivel",
+  "incluirDocumento",
   async (
     _,
     password: string,

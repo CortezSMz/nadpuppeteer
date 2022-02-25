@@ -5,10 +5,9 @@ export default [
     title: "Indo para inclusão de documento...",
     do: async (page, { processo }) =>
       page.goto(
-        `https://www.documentos.spsempapel.sp.gov.br/sigaex/app/expediente/doc/editar?modelo=25310&mobilPaiSel.sigla=${processo.replace(
-          /-|\//g,
-          ""
-        )}V01&criandoAnexo=true&criandoSubprocesso=false`,
+        `https://www.documentos.spsempapel.sp.gov.br/sigaex/app/expediente/doc/editar?modelo=25310&mobilPaiSel.sigla=${processo
+          .toString()
+          .replace(/-|\//g, "")}V01&criandoAnexo=true&criandoSubprocesso=false`,
         { waitUntil: "networkidle0" }
       ),
   },
@@ -18,7 +17,7 @@ export default [
   },
   {
     title: "Preenchendo interessado...",
-    do: (page, { unidade }) => page.type("#Interessado", unidade),
+    do: (page, { unidade }) => page.type("#Interessado", unidade.toString()),
   },
   {
     title: "Confirmando despacho...",

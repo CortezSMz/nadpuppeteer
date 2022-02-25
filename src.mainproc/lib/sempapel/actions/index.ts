@@ -8,5 +8,6 @@ export { default as DESPACHO_DIRIGENTE_CONFIRMACAO } from "./inserviveis/despach
 export { default as INFORMACAO_CAF_AUTORIZANDO_BAIXA } from "./inserviveis/informacao_caf_autorizando_baixa";
 
 // geral
+export { default as AUTUAR_PROCESSO } from "./geral/autuar_processo";
 export { default as PEGAR_DADOS } from "./geral/pegar_dados";
 export { default as ENTRAR } from "./geral/entrar";

@@ -1,8 +1,8 @@
 import moment from "moment";
 import { ipcMain } from "electron";
 import StepIterator from "../lib/StepIterator";
-import { getEscola, getEscolas, setEscola } from "../lib/StorageManager";
 import { PEGAR_DADOS } from "../lib/sempapel/actions/index";
+import { getEscola, getEscolas, setEscola } from "../lib/StorageManager";
 
 const atualizarDados = async (_, unidade: string, processo: string) => {
   const iterator = new StepIterator(PEGAR_DADOS, {
