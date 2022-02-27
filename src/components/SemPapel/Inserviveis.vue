@@ -119,6 +119,7 @@
                       prepend-inner-icon="fa-hashtag"
                       :rules="[rules.processo]"
                       autofocus
+                      v-upper-case
                     ></v-text-field>
                   </v-form>
                 </v-card-text>

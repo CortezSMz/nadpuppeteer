@@ -8,14 +8,16 @@
         <v-form ref="loginForm">
           <v-text-field
             v-model="username"
-            :rules="[rules.required]"
+            :rules="[rules.required, rules.characters]"
             label="Usuário"
             placeholder="Digite seu CPF ou matrícula"
             filled
             autofocus
             prepend-inner-icon="fa-user"
-            @keyup="username = username.toUpperCase()"
             color="primary"
+            v-upper-case
+            @input="username = username.replace(/[^\w]/, '')"
+            @keyup.enter="entrar"
           ></v-text-field>
 
           <v-text-field
@@ -27,8 +29,9 @@
             placeholder="Digite sua senha"
             filled
             prepend-inner-icon="fa-lock"
-            @click:append="show = !show"
             color="primary"
+            @click:append="show = !show"
+            @keyup.enter="entrar"
           ></v-text-field>
         </v-form>
 
@@ -67,6 +70,8 @@ export default Vue.extend({
       show: false,
       rules: {
         required: (value: string) => !!value || "Obrigatório.",
+        characters: (value: string) =>
+          !/[^\w]/.test(value) || "Somente letras e números.",
       },
     };
   },
