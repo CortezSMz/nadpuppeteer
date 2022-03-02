@@ -43,6 +43,8 @@ export default Vue.extend({
   },
 
   beforeMount() {
+    this.$router.push("/");
+
     api.updateEscolas((escolas: Escolas) => {
       this.updateEscolas(escolas);
     });
