@@ -20,16 +20,14 @@ export async function createMainWindow(): Promise<Puppet> {
   const browser: Browser = await pie.connect(app, puppeteer);
 
   const mainWindow: BrowserWindow = new BrowserWindow({
-    title: `NADPuppeteer - v${version as string}`,
+    title: `NADPuppeteer - v${version}`,
     autoHideMenuBar: true,
     resizable: false,
     width: 1000,
     height: 700,
     webPreferences: {
       contextIsolation: true,
-      preload: process.env.WEBPACK_DEV_SERVER_URL
-        ? path.join(__dirname, "./../src.mainproc/preload/preload.js")
-        : "app://./preload/preload.js",
+      preload: path.join(__dirname, "preload.js"),
     },
   });
 

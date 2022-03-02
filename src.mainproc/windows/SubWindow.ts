@@ -24,19 +24,13 @@ export async function createSubWindow(): Promise<Puppet> {
   const browser: Browser = await pie.connect(app, puppeteer);
 
   const subWindow: BrowserWindow = new BrowserWindow({
-    title: `NADPuppeteer - v${version as string}`,
+    title: `NADPuppeteer - v${version}`,
     resizable: false,
     movable: false,
     minimizable: false,
     maximizable: false,
     closable: false,
     parent: mainWindow.window,
-    webPreferences: {
-      contextIsolation: true,
-      preload: process.env.WEBPACK_DEV_SERVER_URL
-        ? path.join(__dirname, "./../src.mainproc/preload/preload.js")
-        : "app://./preload/preload.js",
-    },
     width: 800,
     height: mainWindow.window.getSize()[1] + 40,
     x: mainWindow.window.getPosition()[0] + mainWindow.window.getSize()[0],

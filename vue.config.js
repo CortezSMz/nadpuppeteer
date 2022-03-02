@@ -1,26 +1,25 @@
 module.exports = {
   pluginOptions: {
     electronBuilder: {
+      preload: "src.mainproc/windows/preload.js",
       mainProcessFile: "src.mainproc/main.ts",
       renderProcessFile: "src/main.ts",
       builderOptions: {
-        asar: false,
-        extraResources: [
-          {
-            from: "src.mainproc/preload",
-            to: "app/preload",
-            filter: "**/*",
-          },
-        ],
-        publish: ["github"],
         appId: "com.electron.nadpuppeteer",
         productName: "NADPuppeteer",
         copyright: "© 2022 Cosmzs#3113",
         directories: {
           output: "dist_electron",
-          buildResources: "build",
         },
+        publish: [
+          {
+            provider: "github",
+            owner: "CortezSMz",
+            repo: "nadpuppeteer",
+          },
+        ],
         win: {
+          publish: ["github"],
           target: "squirrel",
           icon: "./src/assets/icon.ico",
         },
