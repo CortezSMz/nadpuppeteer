@@ -14,23 +14,16 @@
       v-if="progress.value > 0"
     >
       <template v-slot:default="{ value }" style="">
-        <v-container style="margin-top: -30px">
-          <v-row style="padding: -10px; margin: -10px">
-            <div
-              v-for="i in Array(Math.min(95, value))"
-              :key="i"
-              style="width: 1%"
-            ></div>
-            <v-icon
-              style="transform: translateX(valuepx)"
-              dense
-              class="progress-icon"
-              v-if="value > 0"
-            >
+        <div style="width: 100%; margin-bottom: 30px">
+          <div
+            class="text-right"
+            :style="`width: ${progress.value}%; transition: width .3s`"
+          >
+            <v-icon dense class="progress-icon" v-if="value > 0">
               {{ icon }}
             </v-icon>
-          </v-row>
-        </v-container>
+          </div>
+        </div>
       </template>
     </v-progress-linear>
   </v-footer>
@@ -74,7 +67,10 @@ export default Vue.extend({
 
   methods: {
     setProgress(progress: ProgressOptions) {
-      if (progress.value >= 100) progress.value = 0;
+      if (progress.value >= 100)
+        setTimeout(() => {
+          this.progress.value = 0;
+        }, 1500);
       this.progress = {
         ...this.$root.$data.progress,
         ...progress,
