@@ -4,6 +4,9 @@ import pie from "puppeteer-in-electron";
 import { app, protocol } from "electron";
 const isDevelopment = process.env.NODE_ENV !== "production";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
+
+if (require("electron-squirrel-startup")) app.quit();
+
 // Data Storage
 import "./lib/StorageManager";
 
