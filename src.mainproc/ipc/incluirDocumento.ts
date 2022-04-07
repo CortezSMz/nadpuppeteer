@@ -7,6 +7,7 @@ ipcMain.on(
   "incluirDocumento",
   async (
     _,
+    username: string,
     password: string,
     unidade: string,
     processo: string,
@@ -14,8 +15,10 @@ ipcMain.on(
   ) => {
     const steps = documentos[doc];
 
+    console.log(username, password, unidade, processo, doc);
+
     const iterator = new StepIterator(steps, {
-      data: { password, unidade, processo },
+      data: { username, password, unidade, processo },
       alert: {
         color: "blue",
         icon: "fa-pencil",

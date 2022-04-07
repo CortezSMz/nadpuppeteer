@@ -220,6 +220,19 @@
                   {{ getTimeUpdate(item.data.lastUpdate) }}
                 </span>
               </v-card-subtitle>
+              <!-- Ações -->
+              <v-select
+                v-model="documentoParaIncluir"
+                :items="documentosIncluir"
+                item-text="nome"
+                item-value="value"
+                label="Incluir documento"
+                dense
+                outlined
+                prepend-inner-icon="fa-file"
+                append-outer-icon="fa-plus"
+                @click:append-outer="incluirDocumento(item)"
+              ></v-select>
               <!-- SITUAÇÃO -->
               <v-divider></v-divider>
               <v-card-actions>
@@ -282,7 +295,6 @@
                       :items="parsePendencias(item.data.pendencias)"
                       open-all
                       hoverable
-                      activatable
                       item-key="name"
                     >
                       <template v-slot:prepend="{ item, open }">
@@ -290,6 +302,28 @@
                           {{ open ? "fa-folder-open" : "fa-folder" }}
                         </v-icon>
                         <v-icon v-else> fa-file </v-icon>
+                      </template>
+                      <template v-slot:append="{ item }">
+                        <v-row v-if="item.file">
+                          <v-col>
+                            <v-btn small>
+                              <v-img
+                                style="margin-right: 5px"
+                                src="https://www.documentos.spsempapel.sp.gov.br/siga/css/famfamfam/icons/eye.png"
+                              ></v-img>
+                              <span> Visualizar</span>
+                            </v-btn>
+                          </v-col>
+                          <v-col>
+                            <v-btn small>
+                              <v-img
+                                style="margin-right: 5px"
+                                src="https://www.documentos.spsempapel.sp.gov.br/siga/css/famfamfam/icons/page_white_go.png"
+                              ></v-img>
+                              <span> Juntar</span>
+                            </v-btn>
+                          </v-col>
+                        </v-row>
                       </template>
                     </v-treeview>
                   </v-card-text>
@@ -408,6 +442,13 @@ import moment from "moment";
 
 import { ipcRenderer } from "electron";
 declare var api: {
+  incluir: (
+    username: string,
+    password: string,
+    unidade: string,
+    processo: string,
+    doc: string
+  ) => void;
   atualizarDados: (unidade: string, processo: string) => void;
   setEscola: (unidade: string, dados: unknown) => void;
   delEscola: (unidade: string) => void;
@@ -446,6 +487,11 @@ export default Vue.extend({
   name: "Escolas",
 
   data(): {
+    documentoParaIncluir: any;
+    documentosIncluir: {
+      nome: string;
+      value: string;
+    }[];
     autuar: {
       mapaDeArrolamento: null | { path: string };
       informacaoDiretor: null | { path: string };
@@ -513,6 +559,31 @@ export default Vue.extend({
     };
   } {
     return {
+      documentoParaIncluir: null,
+      documentosIncluir: [
+        { nome: "Informacao EAMEX", value: "INFORMACAO_EAMEX" },
+        {
+          nome: "Despacho Dirigente - Verifique material arrolado",
+          value: "DESPACHO_DIRIGENTE_VERIFIQUE",
+        },
+        {
+          nome: "Informação CAF - Sem impedimento legal",
+          value: "INFORMACAO_CAF_SEM_IMPEDIMENTO_LEGAL",
+        },
+        {
+          nome: "Despacho Dirigente - Autorizando desfazimento",
+          value: "DESPACHO_DIRIGENTE_AUTORIZANDO",
+        },
+        // { nome: "Encaminhar para escola", value: "ENCAMINHAR_PARA_ESCOLA" },
+        {
+          nome: "Despacho Dirigente - Solicitando confirmacao de retirada",
+          value: "DESPACHO_DIRIGENTE_CONFIRMACAO",
+        },
+        {
+          nome: "Informacao CAF - Autorizando baixa contabil",
+          value: "INFORMACAO_CAF_AUTORIZANDO_BAIXA",
+        },
+      ],
       autuar: {
         mapaDeArrolamento: null,
         informacaoDiretor: null,
@@ -659,6 +730,16 @@ export default Vue.extend({
   },
 
   methods: {
+    incluirDocumento(item: { numero: string }) {
+      api.incluir(
+        this.$root.$data.credentials.sempapel.username,
+        this.$root.$data.credentials.sempapel.password,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.escola!.text,
+        item.numero,
+        this.documentoParaIncluir
+      );
+    },
     atualizarDados(unidade: string, numero: string): void {
       api.atualizarDados(unidade, numero);
     },

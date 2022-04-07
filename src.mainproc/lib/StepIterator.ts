@@ -16,6 +16,7 @@ interface IteratorOptions {
   progress?: boolean;
   delay?: number;
   alert?: AlertOptions;
+  visible?: boolean;
 }
 
 export default class StepIterator {
@@ -32,6 +33,7 @@ export default class StepIterator {
 
     this.options = {
       ...options,
+      visible: false,
       progress: true,
       delay: 250,
     };
@@ -40,7 +42,7 @@ export default class StepIterator {
   public async iterate(): Promise<Record<string, unknown>> {
     const subWindow = await createSubWindow();
 
-    subWindow.window.show();
+    if (this.options.visible) subWindow.window.show();
 
     let responses: Record<string, unknown>;
 
@@ -86,7 +88,7 @@ export default class StepIterator {
       await sleep(this.options.delay);
     }
 
-    subWindow.window.hide();
+    if (this.options.visible) subWindow.window.hide();
 
     return responses;
   }

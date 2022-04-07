@@ -230,7 +230,7 @@ export default [
   },
   {
     title: "Selecionando cossignatário...",
-    do: (page) => page.type("#formulario_cosignatarioSel_sigla", "SEDUC17757"),
+    do: (page) => page.type("#formulario_cosignatarioSel_sigla", "SEDUC16612"),
   },
   {
     title: "Personalizando cossignatário...",
@@ -512,7 +512,7 @@ export default [
   },
   {
     title: "Selecionando cossignatário...",
-    do: (page) => page.type("#formulario_cosignatarioSel_sigla", "SEDUC17757"),
+    do: (page) => page.type("#formulario_cosignatarioSel_sigla", "SEDUC16612"),
   },
   {
     title: "Personalizando cossignatário...",

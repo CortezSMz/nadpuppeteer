@@ -21,6 +21,20 @@ export default [
     do: (page) => page.waitForSelector("#Assunto"),
   },
   {
+    title: "Preenchendo assinante...",
+    do: (page, { username }) =>
+      Promise.all([
+        page.click(
+          "#frm > div.row.js-siga-sp-documento-analisa-alteracao > div.col-sm-8 > div > div > input",
+          { clickCount: 3 }
+        ),
+        page.type(
+          "#frm > div.row.js-siga-sp-documento-analisa-alteracao > div.col-sm-8 > div > div > input",
+          username.toString()
+        ),
+      ]),
+  },
+  {
     title: "Preenchendo assunto...",
     do: (page) =>
       page.type(
@@ -81,6 +95,13 @@ export default [
     do: (page) =>
       page.click(
         "body > div:nth-child(6) > div > div.card-body > form > div:nth-child(5) > div > input.btn.btn-primary"
+      ),
+  },
+  {
+    title: "Voltando para capa",
+    do: (page) =>
+      page.click(
+        "body > div:nth-child(6) > div.card.bg-light.mb-3 > div.card-body > form > div:nth-child(5) > div > input.btn.btn-cancel.ml-2"
       ),
   },
   {

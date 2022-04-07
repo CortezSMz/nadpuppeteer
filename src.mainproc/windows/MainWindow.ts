@@ -63,13 +63,6 @@ export async function createMainWindow(): Promise<Puppet> {
     }
   });
 
-  mainWindow.on("will-move", (_, pos: { x: number; y: number }) => {
-    const subWindow = getWindow("SubWindow");
-
-    if (subWindow)
-      subWindow.window.setPosition(pos.x + mainWindow.getSize()[0], pos.y);
-  });
-
   return {
     window: mainWindow,
     page: mainPage,

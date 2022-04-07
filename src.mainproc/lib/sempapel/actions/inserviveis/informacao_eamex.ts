@@ -27,6 +27,20 @@ export default [
       ),
   },
   {
+    title: "Preenchendo assinante...",
+    do: (page, { username }) =>
+      Promise.all([
+        page.click(
+          "#frm > div.row.js-siga-sp-documento-analisa-alteracao > div.col-sm-8 > div > div > input",
+          { clickCount: 3 }
+        ),
+        page.type(
+          "#frm > div.row.js-siga-sp-documento-analisa-alteracao > div.col-sm-8 > div > div > input",
+          username.toString()
+        ),
+      ]),
+  },
+  {
     title: "Personalizando assinatura...",
     do: (page) =>
       page.click(
@@ -96,7 +110,7 @@ export default [
   },
   {
     title: "Selecionando cossignatário...",
-    do: (page) => page.type("#formulario_cosignatarioSel_sigla", "SEDUC17757"),
+    do: (page) => page.type("#formulario_cosignatarioSel_sigla", "SEDUC16612"),
   },
   {
     title: "Personalizando cossignatário...",
@@ -132,10 +146,6 @@ export default [
       ]),
   },
   {
-    title: "Incluindo cossignatário...",
-    do: (page) => page.click("#incluir-cossignatario"),
-  },
-  {
     title: "Selecionando cossignatário...",
     do: (page) => page.type("#formulario_cosignatarioSel_sigla", "SEDUC56333"),
   },
@@ -168,6 +178,13 @@ export default [
         ),
         page.waitForNavigation({ waitUntil: "networkidle0" }),
       ]),
+  },
+  {
+    title: "Voltando para capa",
+    do: (page) =>
+      page.click(
+        "body > div:nth-child(6) > div.card.bg-light.mb-3 > div.card-body > form > div:nth-child(5) > div > input.btn.btn-cancel.ml-2"
+      ),
   },
   {
     title: "Indo para assinatura...",

@@ -25,16 +25,13 @@ export async function createSubWindow(): Promise<Puppet> {
 
   const subWindow: BrowserWindow = new BrowserWindow({
     title: `NADPuppeteer - v${version}`,
-    resizable: false,
-    movable: false,
-    minimizable: false,
-    maximizable: false,
-    closable: false,
     parent: mainWindow.window,
-    width: 800,
-    height: mainWindow.window.getSize()[1] + 40,
-    x: mainWindow.window.getPosition()[0] + mainWindow.window.getSize()[0],
-    y: mainWindow.window.getPosition()[1],
+    closable: false,
+    show: false,
+    width: 1000,
+    height: 700,
+    x: mainWindow.window.getPosition()[0] + 50,
+    y: mainWindow.window.getPosition()[1] + 50,
   });
 
   const subPage = await getPage(browser, subWindow);
@@ -55,8 +52,6 @@ export async function createSubWindow(): Promise<Puppet> {
   );
 
   subWindow.removeMenu();
-
-  subWindow.setIgnoreMouseEvents(true);
 
   subWindow.on("closed", () => {
     unregisterWindow("SubWindow");
